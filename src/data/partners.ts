@@ -25,6 +25,11 @@ export const partners: Partner[] = [
     description: {
       en: 'Our agency partner in Portugal.',
       tr: 'Portekiz’deki acente partnerimiz.',
+      de: 'Unser Agenturpartner in Portugal.',
+      pt: 'O nosso parceiro de agência em Portugal.',
+      it: 'Il nostro partner di agenzia in Portogallo.',
+      ru: 'Наш агентский партнёр в Португалии.',
+      ar: 'شريكنا في الوكالة في البرتغال.',
     },
   },
   {
@@ -35,6 +40,11 @@ export const partners: Partner[] = [
     description: {
       en: 'Our partner company in Porto, Portugal.',
       tr: 'Porto, Portekiz’deki partner firmamız.',
+      de: 'Unser Partnerunternehmen in Porto, Portugal.',
+      pt: 'A nossa empresa parceira no Porto, Portugal.',
+      it: 'La nostra azienda partner a Porto, in Portogallo.',
+      ru: 'Наша компания-партнёр в Порту, Португалия.',
+      ar: 'شركتنا الشريكة في بورتو، البرتغال.',
     },
   },
 ];

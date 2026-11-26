@@ -6,13 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "check": "node scripts/check-site.mjs",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && jiti scripts/i18n-check.mts",
+    "i18n:check": "jiti scripts/i18n-check.mts",
     "prebuild": "node scripts/shipments.mjs check",
     "shipment:add": "node scripts/shipments.mjs add",
     "shipment:status": "node scripts/shipments.mjs status",
     "shipment:list": "node scripts/shipments.mjs list",
     "data:check": "node scripts/shipments.mjs check",
     "render": "node scripts/render/run.mjs",
+    "brand": "node scripts/brand-images.mjs",
     "qa": "node scripts/qa.mjs"
   },
   "dependencies": {

@@ -1,14 +1,12 @@
 /**
- * Languages.
- * - `complete`: every page and all product content is translated.
- * - Other languages have the menus, buttons, forms and main page texts translated; longer content
- *   (product details, textile knowledge) falls back to English until it is translated.
+ * Languages. All seven are complete: interface texts in src/locales/<locale>.ts (type-checked against
+ * English), product / cotton / knowledge texts in src/data/*.ts (EN, TR) and src/data/i18n/<locale>.ts
+ * (DE, PT, IT, RU, AR). `npm run typecheck` fails if anything is missing.
  *
  * To add a language (for example Spanish):
  * 1. add 'es' to `locales` and an entry in `localeMeta`,
- * 2. create src/locales/es.ts (copy src/locales/de.ts and translate),
- * 3. register it in src/locales/index.ts,
- * 4. optionally add `es: '...'` next to `en`/`tr` in the data files (src/data/*) for full content.
+ * 2. create src/locales/es.ts (copy src/locales/de.ts and translate) and register it in src/locales/index.ts,
+ * 3. create src/data/i18n/es.ts (copy de.ts and translate) and register it in src/data/i18n/index.ts.
  */
 export const locales = ['en', 'tr', 'de', 'pt', 'it', 'ru', 'ar'] as const;
 export type Locale = (typeof locales)[number];
@@ -17,11 +15,11 @@ export const defaultLocale: Locale = 'en';
 export const localeMeta: Record<Locale, { label: string; short: string; dir: 'ltr' | 'rtl'; ogLocale: string; complete: boolean }> = {
   en: { label: 'English', short: 'EN', dir: 'ltr', ogLocale: 'en_GB', complete: true },
   tr: { label: 'Türkçe', short: 'TR', dir: 'ltr', ogLocale: 'tr_TR', complete: true },
-  de: { label: 'Deutsch', short: 'DE', dir: 'ltr', ogLocale: 'de_DE', complete: false },
-  pt: { label: 'Português', short: 'PT', dir: 'ltr', ogLocale: 'pt_PT', complete: false },
-  it: { label: 'Italiano', short: 'IT', dir: 'ltr', ogLocale: 'it_IT', complete: false },
-  ru: { label: 'Русский', short: 'RU', dir: 'ltr', ogLocale: 'ru_RU', complete: false },
-  ar: { label: 'العربية', short: 'AR', dir: 'rtl', ogLocale: 'ar_AR', complete: false },
+  de: { label: 'Deutsch', short: 'DE', dir: 'ltr', ogLocale: 'de_DE', complete: true },
+  pt: { label: 'Português', short: 'PT', dir: 'ltr', ogLocale: 'pt_PT', complete: true },
+  it: { label: 'Italiano', short: 'IT', dir: 'ltr', ogLocale: 'it_IT', complete: true },
+  ru: { label: 'Русский', short: 'RU', dir: 'ltr', ogLocale: 'ru_RU', complete: true },
+  ar: { label: 'العربية', short: 'AR', dir: 'rtl', ogLocale: 'ar_AR', complete: true },
 };
 
 export function isLocale(value: string): value is Locale {

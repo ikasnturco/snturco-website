@@ -1,4 +1,5 @@
 /** Textile Knowledge: short, practical explanations for buyers and newcomers. */
+import { applyTranslations } from './i18n';
 import type { L } from '@/i18n/config';
 
 export type Topic = {
@@ -11,7 +12,7 @@ export type Topic = {
   related: string[];
 };
 
-export const topics: Topic[] = [
+export const topics: Topic[] = applyTranslations<Topic>([
   {
     slug: 'natural-and-synthetic-fibres',
     title: { en: 'Natural and synthetic fibres', tr: 'Doğal ve sentetik lifler' },
@@ -147,4 +148,4 @@ export const topics: Topic[] = [
     visual: 'uses',
     related: ['cotton', 'polyester', 'linen', 'polypropylene'],
   },
-];
+], 'knowledge');
