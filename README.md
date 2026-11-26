@@ -56,13 +56,18 @@ Static hosting has no server, so forms work in one of two ways:
 1. Repository → Settings → Pages → Source: **GitHub Actions**.
 2. Push to `main`. The site appears at `https://<user>.github.io/<repo>/`.
 
-### Connecting snturco.com (later, after approval)
+### Custom domain snturco.com
 
-1. Repository → Settings → Pages → Custom domain: `www.snturco.com`.
-2. Add a repository variable `SITE_URL` = `https://www.snturco.com` and re-run the deploy.
-3. DNS (Google Workspace / Squarespace Domains): add **one** record
-   `CNAME  www  →  <user>.github.io`.
-   Optionally redirect the bare domain `snturco.com` to `www` with the registrar's forwarding feature,
-   or add GitHub's four `A` records for `@` (185.199.108.153, .109.153, .110.153, .111.153).
-   **Do not change MX, SPF, DKIM or nameserver records** — they carry the company email.
-4. When the certificate is ready, tick "Enforce HTTPS".
+The Pages custom domain is `snturco.com`. Canonical URLs use `https://snturco.com`
+(override with a repository variable `SITE_URL`). DNS at the registrar (Squarespace Domains, managed through Google Workspace):
+
+| Type | Host | Value |
+| --- | --- | --- |
+| A | @ | 185.199.108.153 |
+| A | @ | 185.199.109.153 |
+| A | @ | 185.199.110.153 |
+| A | @ | 185.199.111.153 |
+| CNAME | www | ikasnturco.github.io |
+
+Remove any other A/AAAA records on `@` (old Squarespace site). **Do not change MX, SPF (TXT), DKIM (TXT) or nameserver records** — they carry the company email.
+When GitHub shows the certificate is ready, tick "Enforce HTTPS" in Settings → Pages.

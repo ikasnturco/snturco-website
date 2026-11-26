@@ -5,7 +5,7 @@
 export const site = {
   name: 'SNTURCO',
   legalName: 'SNTURCO, LDA.',
-  url: (process.env.NEXT_PUBLIC_SITE_URL || 'https://www.snturco.com').replace(/\/$/, ''),
+  url: (process.env.NEXT_PUBLIC_SITE_URL || 'https://snturco.com').replace(/\/$/, ''),
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
   email: 'ikasourcing@snturco.com',
   address: {
