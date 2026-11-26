@@ -83,7 +83,7 @@ try {
   await stat(out);
   const server = await serve();
   const port = server.address().port;
-  for (const l of ['en', 'tr', 'ru', 'ar']) {
+  for (const l of ['en', 'de', 'tr', 'pt', 'it', 'ru', 'ar']) {
     await page.goto(`http://localhost:${port}/${l}/company-profile/`, { waitUntil: 'networkidle' });
     await page.emulateMedia({ media: 'print' });
     await page.pdf({ path: join(pub, 'downloads', `snturco-company-profile-${l}.pdf`), format: 'A4', printBackground: true, margin: { top: '14mm', bottom: '14mm', left: '14mm', right: '14mm' } });

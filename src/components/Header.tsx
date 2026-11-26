@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Logo } from './Logo';
 import { href, locales, localeMeta, type Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n';
@@ -17,24 +17,46 @@ function useCurrentSlug(locale: Locale) {
 
 export function LanguageSwitcher({ locale, label, className = '' }: { locale: Locale; label: string; className?: string }) {
   const slug = useCurrentSlug(locale);
+  const ref = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    const close = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) ref.current.open = false;
+    };
+    document.addEventListener('click', close);
+    return () => document.removeEventListener('click', close);
+  }, []);
   return (
-    <nav aria-label={label} className={`flex items-center gap-1 text-[13px] ${className}`}>
-      {locales.map((l) => (
-        <Link
-          key={l}
-          href={href(l, slug)}
-          hrefLang={l}
-          lang={l}
-          aria-current={l === locale ? 'true' : undefined}
-          title={localeMeta[l].label}
-          className={`rounded px-2 py-1 font-medium transition ${
-            l === locale ? 'bg-navy text-white' : 'text-slate hover:bg-mist hover:text-navy'
-          }`}
-        >
-          {localeMeta[l].short}
-        </Link>
-      ))}
-    </nav>
+    <details ref={ref} className={`group relative ${className}`}>
+      <summary
+        aria-label={`${label}: ${localeMeta[locale].label}`}
+        className="flex cursor-pointer list-none items-center gap-1.5 rounded border border-line px-2.5 py-1.5 text-[13px] font-medium text-navy transition hover:border-navy/40 [&::-webkit-details-marker]:hidden"
+      >
+        <svg width="15" height="15" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="16" cy="16" r="12" />
+          <path d="M4 16h24M16 4c3.5 3.4 5 7.4 5 12s-1.5 8.6-5 12c-3.5-3.4-5-7.4-5-12s1.5-8.6 5-12Z" />
+        </svg>
+        {localeMeta[locale].short}
+        <svg width="9" height="9" viewBox="0 0 10 10" aria-hidden="true" className="opacity-60 transition group-open:rotate-180">
+          <path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.4" />
+        </svg>
+      </summary>
+      <nav aria-label={label} className="absolute end-0 top-full z-50 mt-2 w-44 rounded-md border border-line bg-white p-1.5 shadow-lg shadow-navy/5">
+        {locales.map((l) => (
+          <Link
+            key={l}
+            href={href(l, slug)}
+            hrefLang={l}
+            lang={l}
+            aria-current={l === locale ? 'true' : undefined}
+            onClick={() => ref.current && (ref.current.open = false)}
+            className={`flex items-center justify-between rounded px-3 py-2 text-[14px] transition hover:bg-mist ${l === locale ? 'font-medium text-navy' : 'text-charcoal'}`}
+          >
+            <span>{localeMeta[l].label}</span>
+            <span className="text-[11px] text-slate">{localeMeta[l].short}</span>
+          </Link>
+        ))}
+      </nav>
+    </details>
   );
 }
 
@@ -104,7 +126,7 @@ export function Header({ locale, dict }: Props) {
         </nav>
 
         <div className="flex items-center gap-3">
-          <LanguageSwitcher locale={locale} label={dict.common.language} className="hidden sm:flex" />
+          <LanguageSwitcher locale={locale} label={dict.common.language} className="hidden sm:block" />
           <Link href={href(locale, 'request-a-quote')} className="btn-primary hidden whitespace-nowrap md:inline-flex">
             {dict.common.cta.quote}
           </Link>
@@ -142,7 +164,7 @@ export function Header({ locale, dict }: Props) {
             <Link href={href(locale, 'request-a-quote')} className="btn-primary mt-5 justify-center">
               {dict.common.cta.quote}
             </Link>
-            <LanguageSwitcher locale={locale} label={dict.common.language} className="mt-5 sm:hidden" />
+            <LanguageSwitcher locale={locale} label={dict.common.language} className="mt-5 self-start sm:hidden [&>nav]:bottom-full [&>nav]:top-auto [&>nav]:mb-2 [&>nav]:start-0 [&>nav]:end-auto" />
           </nav>
         </div>
       )}

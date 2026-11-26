@@ -1,7 +1,7 @@
 import { site } from '@/config/site';
 
 /**
- * The site root sends visitors to their language (Turkish, Russian or Arabic browsers)
+ * The site root sends visitors to their language (based on the browser language)
  * or to English by default. Search engines see a canonical link to /en/.
  */
 export const metadata = {
@@ -10,7 +10,7 @@ export const metadata = {
   robots: { index: false, follow: true },
 };
 
-const script = `(function(){var b=${JSON.stringify(site.basePath)};var l=((navigator.languages&&navigator.languages[0])||navigator.language||'en').slice(0,2).toLowerCase();var s=['en','tr','ru','ar'];location.replace(b+'/'+(s.indexOf(l)>-1?l:'en')+'/');})();`;
+const script = `(function(){var b=${JSON.stringify(site.basePath)};var l=((navigator.languages&&navigator.languages[0])||navigator.language||'en').slice(0,2).toLowerCase();var s=['en','de','tr','pt','it','ru','ar'];location.replace(b+'/'+(s.indexOf(l)>-1?l:'en')+'/');})();`;
 
 export default function RootPage() {
   return (
