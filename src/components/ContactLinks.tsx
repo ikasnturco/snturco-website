@@ -7,7 +7,7 @@ export function WhatsAppButton({ dict, message, className = '' }: { dict: Dictio
   return (
     <a href={whatsappHref(message ?? dict.contact.whatsappMessage)} target="_blank" rel="noopener" className={`btn-whatsapp ${className}`} data-whatsapp>
       <IconWhatsApp width={20} height={20} />
-      <span className="uppercase tracking-[0.08em]">{dict.contact.whatsapp}</span>
+      <span className="whitespace-nowrap uppercase tracking-[0.06em]">{dict.contact.whatsapp}</span>
     </a>
   );
 }

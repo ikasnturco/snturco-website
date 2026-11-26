@@ -22,6 +22,7 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           <Logo inverted />
           <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-white/60">{f.tagline}</p>
           <p className="mt-6 font-display text-[22px] italic text-white/85">{dict.meta.tagline}</p>
+          <WhatsAppButton dict={dict} className="mt-7 whitespace-nowrap !px-5 !py-3 text-[13px]" />
           {social.length > 0 && (
             <div className="mt-6">
               <p className={head}>{f.social}</p>
@@ -97,7 +98,6 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           <div className="mt-5">
             <ContactList dict={dict} />
           </div>
-          <WhatsAppButton dict={dict} className="mt-6 !px-5 !py-3 text-[13px]" />
         </div>
       </div>
       <div className="border-t border-white/10">

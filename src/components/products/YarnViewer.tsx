@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { Dictionary } from '@/locales';
 
 type Labels = Dictionary['product']['viewer'];
@@ -22,7 +23,8 @@ export function YarnViewer({ slug, kind = 'yarn', name, labels }: { slug: string
         </svg>
         {labels.open}
       </button>
-      {open && <ViewerDialog slug={slug} kind={kind} name={name} labels={labels} onClose={() => setOpen(false)} />}
+      {/* Portal: the button sits inside animated (transformed) containers, which would break position: fixed. */}
+      {open && createPortal(<ViewerDialog slug={slug} kind={kind} name={name} labels={labels} onClose={() => setOpen(false)} />, document.body)}
     </>
   );
 }

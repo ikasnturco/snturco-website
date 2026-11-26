@@ -105,7 +105,7 @@ export function Hero({ locale, dict }: { locale: Locale; dict: Dictionary }) {
       <div className="container flex h-full flex-col justify-end pb-20 md:justify-center md:pb-16">
         <div className="max-w-3xl">
           <p className="eyebrow animate-rise text-copper-300 [animation-delay:200ms]">{h.eyebrow}</p>
-          <h1 className="display mt-6 animate-rise text-[clamp(3rem,8vw,7rem)] [animation-delay:320ms]">{h.title}</h1>
+          <h1 className="display mt-6 animate-rise text-[clamp(2.8rem,6.4vw,6rem)] [animation-delay:320ms]">{h.title}</h1>
           <p className="mt-7 max-w-xl animate-rise text-[clamp(1.05rem,1.6vw,1.3rem)] leading-relaxed text-white/75 [animation-delay:460ms]">{h.lead}</p>
           <div className="mt-10 flex animate-rise flex-wrap gap-3 [animation-delay:600ms]">
             <Link href={href(locale, 'products')} className="btn-copper">
