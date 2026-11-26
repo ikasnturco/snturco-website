@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
-import { HomeView } from '@/views/Home';
-import { getDictionary, isLocale, locales } from '@/i18n';
-import { buildMetadata } from '@/lib/seo';
 import { notFound } from 'next/navigation';
+import { HomeView } from '@/views/Home';
+import { isLocale, locales } from '@/i18n/config';
+import { getDictionary } from '@/locales';
+import { buildMetadata, organizationJsonLd } from '@/lib/seo';
+import { JsonLd } from '@/components/ui';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -11,11 +13,16 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
-  return buildMetadata(locale, '', getDictionary(locale).home.meta);
+  return buildMetadata(locale, '', getDictionary(locale).home.meta, { image: '/images/hero/poster.webp' });
 }
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  return <HomeView locale={locale} dict={getDictionary(locale)} />;
+  return (
+    <>
+      <JsonLd data={organizationJsonLd(locale)} />
+      <HomeView locale={locale} dict={getDictionary(locale)} />
+    </>
+  );
 }

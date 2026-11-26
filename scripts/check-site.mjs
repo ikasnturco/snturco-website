@@ -7,7 +7,7 @@ const { chromium } = createRequire(import.meta.url)('playwright');
 
 const out = resolve('out');
 const shots = process.argv[2];
-const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.woff2': 'font/woff2', '.woff': 'font/woff', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon', '.pdf': 'application/pdf', '.xml': 'application/xml', '.txt': 'text/plain' };
+const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.woff2': 'font/woff2', '.woff': 'font/woff', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon', '.pdf': 'application/pdf', '.xml': 'application/xml', '.txt': 'text/plain', '.webp': 'image/webp', '.json': 'application/json' };
 const server = await new Promise((ok) => {
   const s = createServer(async (req, res) => {
     const p = decodeURIComponent(new URL(req.url, 'http://x').pathname);

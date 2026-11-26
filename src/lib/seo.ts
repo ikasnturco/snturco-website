@@ -1,20 +1,19 @@
 import type { Metadata } from 'next';
 import { site } from '@/config/site';
 import { href, locales, localeMeta, defaultLocale, type Locale } from '@/i18n/config';
-import { getDictionary } from '@/i18n';
+import { getDictionary } from '@/locales';
 
 export function absoluteUrl(path: string) {
   return `${site.url}${path}`;
 }
 
-export function buildMetadata(locale: Locale, slug: string, meta: { title: string; description: string }): Metadata {
-  const dict = getDictionary(locale);
+export function buildMetadata(locale: Locale, slug: string, meta: { title: string; description: string }, opts: { image?: string } = {}): Metadata {
   const path = href(locale, slug);
   const languages: Record<string, string> = {};
   for (const l of locales) languages[l] = absoluteUrl(href(l, slug));
   languages['x-default'] = absoluteUrl(href(defaultLocale, slug));
-  const title = slug ? `${meta.title} | ${site.name}` : dict.meta.siteTitle;
-  const image = absoluteUrl('/og-image.png');
+  const title = `${meta.title} | ${site.name}`;
+  const image = absoluteUrl(opts.image || '/og-image.png');
 
   return {
     title,
@@ -29,7 +28,7 @@ export function buildMetadata(locale: Locale, slug: string, meta: { title: strin
       description: meta.description,
       locale: localeMeta[locale].ogLocale,
       alternateLocale: locales.filter((l) => l !== locale).map((l) => localeMeta[l].ogLocale),
-      images: [{ url: image, width: 1200, height: 630, alt: site.legalName }],
+      images: [{ url: image, alt: site.legalName }],
     },
     twitter: { card: 'summary_large_image', title, description: meta.description, images: [image] },
     robots: { index: true, follow: true },
@@ -65,7 +64,7 @@ export function organizationJsonLd(locale: Locale) {
         availableLanguage: ['English', 'Turkish'],
       },
     ],
-    knowsAbout: ['Yarn trading', 'Cotton yarn', 'Polyester yarn', 'Textile sourcing', 'Textile procurement', 'Textile import and export'],
+    knowsAbout: ['Yarn trading', 'Cotton yarn', 'Polyester yarn', 'Viscose yarn', 'Wool yarn', 'Linen yarn', 'Textile sourcing'],
     ...(sameAs.length ? { sameAs } : {}),
   };
 }

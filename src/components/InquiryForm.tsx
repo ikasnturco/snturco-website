@@ -4,75 +4,68 @@ import Link from 'next/link';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { site } from '@/config/site';
 import { href, type Locale } from '@/i18n/config';
-import type { Dictionary } from '@/i18n';
+import type { Dictionary } from '@/locales';
 
-type Kind = 'quote' | 'contact' | 'partner';
-type FieldType = 'text' | 'email' | 'url' | 'textarea' | 'select';
-type Field = { name: string; label: string; type: FieldType; required?: boolean; hint?: string; options?: { value: string; label: string }[]; wide?: boolean; autoComplete?: string };
+/**
+ * Quote and contact form.
+ * - With NEXT_PUBLIC_FORM_ENDPOINT set, it POSTs JSON to that endpoint and shows success only
+ *   when the endpoint confirms delivery.
+ * - Without it, it opens the visitor's email program with the message ready (mailto). It never
+ *   claims a message was sent when it was not.
+ */
+type Kind = 'quote' | 'contact';
+type FieldType = 'text' | 'email' | 'tel' | 'textarea' | 'select';
+export type YarnGroup = { label: string; options: { value: string; label: string }[] };
+type Field = { name: string; label: string; type: FieldType; required?: boolean; hint?: string; wide?: boolean; autoComplete?: string };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const PHONE_RE = /^\+?[0-9 ()./-]{6,20}$/;
 
-function fieldsFor(kind: Kind, dict: Dictionary): Field[] {
-  const f = dict.form.fields;
-  const p = dict.products;
-  const productOptions = (Object.keys(p) as (keyof typeof p)[]).map((k) => ({ value: k, label: p[k] }));
-  const pt = dict.form.partnerTypes;
-  const partnerOptions = (Object.keys(pt) as (keyof typeof pt)[]).map((k) => ({ value: k, label: pt[k] }));
-
-  const name: Field = { name: 'name', label: f.name, type: 'text', required: true, autoComplete: 'name' };
-  const company = (required: boolean): Field => ({ name: 'company', label: f.company, type: 'text', required, autoComplete: 'organization' });
-  const email: Field = { name: 'email', label: f.email, type: 'email', required: true, autoComplete: 'email' };
-  const country: Field = { name: 'country', label: f.country, type: 'text', required: true, autoComplete: 'country-name' };
-
+function fieldsFor(kind: Kind, t: Dictionary['form']): Field[] {
+  const f = t.fields;
+  const head: Field[] = [
+    { name: 'firstName', label: f.firstName, type: 'text', required: true, autoComplete: 'given-name' },
+    { name: 'lastName', label: f.lastName, type: 'text', required: true, autoComplete: 'family-name' },
+    { name: 'company', label: f.company, type: 'text', required: kind === 'quote', autoComplete: 'organization' },
+    { name: 'country', label: f.country, type: 'text', required: true, autoComplete: 'country-name' },
+    { name: 'email', label: f.email, type: 'email', required: true, autoComplete: 'email' },
+  ];
   if (kind === 'quote')
     return [
-      name,
-      company(true),
-      email,
-      country,
-      { name: 'product', label: f.product, type: 'select', required: true, options: productOptions },
+      ...head,
+      { name: 'phone', label: f.phone, type: 'tel', autoComplete: 'tel' },
+      { name: 'yarn', label: f.yarn, type: 'select', required: true },
       { name: 'quantity', label: f.quantity, type: 'text', required: true, hint: f.quantityHint },
-      { name: 'spec', label: f.spec, type: 'text', hint: f.specHint, wide: true },
-      { name: 'destination', label: f.destination, type: 'text' },
-      { name: 'timing', label: f.timing, type: 'text' },
-      { name: 'message', label: f.message, type: 'textarea', required: true, wide: true },
+      { name: 'message', label: f.message, type: 'textarea', required: true, wide: true, hint: f.messageHint },
     ];
-  if (kind === 'partner')
-    return [
-      name,
-      company(true),
-      email,
-      country,
-      { name: 'partnerType', label: f.partnerType, type: 'select', required: true, options: partnerOptions },
-      { name: 'website', label: f.website, type: 'url', autoComplete: 'url' },
-      { name: 'message', label: f.messageGeneral, type: 'textarea', required: true, wide: true },
-    ];
-  return [name, email, company(false), { ...country, required: false }, { name: 'message', label: f.messageGeneral, type: 'textarea', required: true, wide: true }];
+  return [...head, { name: 'subject', label: f.subject, type: 'text', required: true }, { name: 'message', label: f.message, type: 'textarea', required: true, wide: true }];
 }
 
-type Status = { state: 'idle' } | { state: 'sending' } | { state: 'sent' } | { state: 'mailto' } | { state: 'error' };
+type Status = 'idle' | 'sending' | 'sent' | 'mailto' | 'error';
 
-export function InquiryForm({ kind, locale, dict, idPrefix = kind }: { kind: Kind; locale: Locale; dict: Dictionary; idPrefix?: string }) {
-  const t = dict.form;
-  const fields = fieldsFor(kind, dict);
+export function InquiryForm({ kind, locale, t, privacyLabel, yarnGroups = [] }: { kind: Kind; locale: Locale; t: Dictionary['form']; privacyLabel: string; yarnGroups?: YarnGroup[] }) {
+  const fields = fieldsFor(kind, t);
   const [values, setValues] = useState<Record<string, string>>({});
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [status, setStatus] = useState<Status>({ state: 'idle' });
+  const [status, setStatus] = useState<Status>('idle');
   const formRef = useRef<HTMLFormElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
   const usesEndpoint = Boolean(site.formEndpoint);
+  const idPrefix = kind;
+  const allYarns = yarnGroups.flatMap((g) => g.options);
 
-  // Pre-select a product when arriving from a "Request this yarn" link (?product=cotton).
+  // ?yarn=cotton preselects the yarn when coming from a product page.
   useEffect(() => {
     if (kind !== 'quote') return;
-    const product = new URLSearchParams(window.location.search).get('product');
-    if (product && product in dict.products) setValues((v) => ({ ...v, product }));
-  }, [kind, dict.products]);
+    const yarn = new URLSearchParams(window.location.search).get('yarn');
+    if (yarn && allYarns.some((o) => o.value === yarn)) setValues((v) => ({ ...v, yarn }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [kind]);
 
   useEffect(() => {
-    if (status.state !== 'idle' && status.state !== 'sending') statusRef.current?.focus();
-  }, [status.state]);
+    if (status === 'sent' || status === 'mailto' || status === 'error') statusRef.current?.focus();
+  }, [status]);
 
   function validate() {
     const next: Record<string, string> = {};
@@ -80,52 +73,55 @@ export function InquiryForm({ kind, locale, dict, idPrefix = kind }: { kind: Kin
       const v = (values[field.name] || '').trim();
       if (field.required && !v) next[field.name] = t.errors.required;
       else if (field.type === 'email' && v && !EMAIL_RE.test(v)) next[field.name] = t.errors.email;
+      else if (field.type === 'tel' && v && !PHONE_RE.test(v)) next[field.name] = t.errors.phone;
     }
     if (!consent) next.consent = t.errors.consent;
     return next;
   }
 
+  const shown = (f: Field) => {
+    const raw = (values[f.name] || '').trim();
+    return f.type === 'select' ? (allYarns.find((o) => o.value === raw)?.label ?? raw) : raw;
+  };
+
   function summaryText() {
-    const lines = fields
+    return fields
       .filter((f) => (values[f.name] || '').trim())
-      .map((f) => {
-        const raw = values[f.name].trim();
-        const shown = f.options?.find((o) => o.value === raw)?.label ?? raw;
-        return f.type === 'textarea' ? `\n${f.label}:\n${shown}` : `${f.label}: ${shown}`;
-      });
-    return lines.join('\n');
+      .map((f) => (f.type === 'textarea' ? `\n${f.label}:\n${shown(f)}` : `${f.label}: ${shown(f)}`))
+      .join('\n');
   }
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    if (data.get('company_website')) return; // honeypot: ignore automated submissions
+    if (data.get('company_website')) return; // honeypot
 
     const found = validate();
     setErrors(found);
     if (Object.keys(found).length) {
-      const first = Object.keys(found)[0];
-      formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
+      formRef.current?.querySelector<HTMLElement>(`[name="${Object.keys(found)[0]}"]`)?.focus();
       return;
     }
 
-    const subject = `${t.subjects[kind]} – ${values.company || values.name} (SNTURCO website)`;
+    const who = values.company || `${values.firstName} ${values.lastName}`;
+    const topic = kind === 'quote' ? shown(fields.find((f) => f.name === 'yarn')!) : values.subject;
+    const subject = `${t.mailSubjects[kind]}: ${topic} – ${who} (snturco.com)`;
 
     if (!usesEndpoint) {
-      const mailto = `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(summaryText())}`;
-      window.location.href = mailto;
-      setStatus({ state: 'mailto' });
+      window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(summaryText())}`;
+      setStatus('mailto');
       return;
     }
 
-    setStatus({ state: 'sending' });
+    setStatus('sending');
     try {
       const payload: Record<string, string> = { subject, form: kind, language: locale, ...values, consent: 'yes' };
+      if (kind === 'quote' && values.yarn) payload.yarnName = shown(fields.find((f) => f.name === 'yarn')!);
       if (site.formAccessKey) {
         payload.access_key = site.formAccessKey;
         payload.from_name = 'SNTURCO website';
       }
-      if (values.email) payload.replyto = values.email;
+      payload.replyto = values.email;
       const res = await fetch(site.formEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
@@ -133,11 +129,11 @@ export function InquiryForm({ kind, locale, dict, idPrefix = kind }: { kind: Kin
       });
       const json = (await res.json().catch(() => ({}))) as { success?: boolean; ok?: boolean };
       if (!res.ok || json.success === false || json.ok === false) throw new Error(`HTTP ${res.status}`);
-      setStatus({ state: 'sent' });
+      setStatus('sent');
       setValues({});
       setConsent(false);
     } catch {
-      setStatus({ state: 'error' });
+      setStatus('error');
     }
   }
 
@@ -146,9 +142,9 @@ export function InquiryForm({ kind, locale, dict, idPrefix = kind }: { kind: Kin
     if (errors[name]) setErrors((er) => ({ ...er, [name]: '' }));
   };
 
-  if (status.state === 'sent') {
+  if (status === 'sent') {
     return (
-      <div ref={statusRef} tabIndex={-1} role="status" className="rounded-lg border border-emerald-700/20 bg-emerald-50 p-6 text-emerald-900 outline-none">
+      <div ref={statusRef} tabIndex={-1} role="status" className="rounded-2xl border border-emerald-700/20 bg-emerald-50 p-6 text-emerald-900 outline-none">
         {t.success}
       </div>
     );
@@ -156,14 +152,12 @@ export function InquiryForm({ kind, locale, dict, idPrefix = kind }: { kind: Kin
 
   const hasErrors = Object.values(errors).some(Boolean);
   const inputCls = (name: string) =>
-    `mt-2 block w-full rounded-md border bg-white px-3.5 py-3 text-[15px] text-charcoal outline-none transition placeholder:text-slate/60 focus:border-navy focus:ring-2 focus:ring-navy/15 ${
-      errors[name] ? 'border-red-600' : 'border-line'
-    }`;
+    `mt-2 block w-full rounded-xl border bg-white px-4 py-3 text-[15px] text-charcoal outline-none transition placeholder:text-slate/60 focus:border-navy focus:ring-2 focus:ring-navy/15 ${errors[name] ? 'border-red-600' : 'border-line'}`;
 
   return (
-    <form ref={formRef} onSubmit={onSubmit} noValidate className="grid gap-5 sm:grid-cols-2" aria-describedby={hasErrors ? `${idPrefix}-summary` : undefined}>
+    <form ref={formRef} onSubmit={onSubmit} noValidate className="relative grid gap-5 sm:grid-cols-2" aria-describedby={hasErrors ? `${idPrefix}-summary` : undefined} data-form={kind}>
       {hasErrors && (
-        <p id={`${idPrefix}-summary`} role="alert" className="rounded-md bg-red-50 px-4 py-3 text-[14px] text-red-800 sm:col-span-2">
+        <p id={`${idPrefix}-summary`} role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-[14px] text-red-800 sm:col-span-2">
           {t.errors.summary}
         </p>
       )}
@@ -186,8 +180,7 @@ export function InquiryForm({ kind, locale, dict, idPrefix = kind }: { kind: Kin
               {field.label}
               {field.required ? (
                 <span className="text-copper" aria-hidden="true">
-                  {' '}
-                  *
+                  {' '}*
                 </span>
               ) : (
                 <span className="font-normal text-slate"> ({t.optional})</span>
@@ -198,21 +191,18 @@ export function InquiryForm({ kind, locale, dict, idPrefix = kind }: { kind: Kin
             ) : field.type === 'select' ? (
               <select {...common} onChange={(e) => set(field.name, e.target.value)}>
                 <option value="">{t.select}</option>
-                {field.options?.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
+                {yarnGroups.map((g) => (
+                  <optgroup key={g.label} label={g.label}>
+                    {g.options.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </optgroup>
                 ))}
               </select>
             ) : (
-              <input
-                {...common}
-                type={field.type}
-                maxLength={200}
-                autoComplete={field.autoComplete}
-                dir={field.type === 'email' || field.type === 'url' ? 'ltr' : undefined}
-                onChange={(e) => set(field.name, e.target.value)}
-              />
+              <input {...common} type={field.type} maxLength={200} autoComplete={field.autoComplete} dir={field.type === 'email' || field.type === 'tel' ? 'ltr' : undefined} onChange={(e) => set(field.name, e.target.value)} />
             )}
             {field.hint && (
               <p id={`${id}-hint`} className="mt-1.5 text-[13px] text-slate">
@@ -249,10 +239,9 @@ export function InquiryForm({ kind, locale, dict, idPrefix = kind }: { kind: Kin
             className="mt-1 h-4 w-4 shrink-0 accent-navy"
           />
           <span>
-            {t.fields.consent}{' '}
-            (
+            {t.fields.consent} (
             <Link href={href(locale, 'privacy')} className="underline underline-offset-2">
-              {dict.privacyPage.hero.title}
+              {privacyLabel}
             </Link>
             )
           </span>
@@ -266,22 +255,22 @@ export function InquiryForm({ kind, locale, dict, idPrefix = kind }: { kind: Kin
 
       <div className="flex flex-col gap-3 sm:col-span-2">
         <div>
-          <button type="submit" className="btn-primary" disabled={status.state === 'sending'}>
-            {status.state === 'sending' ? t.sending : usesEndpoint ? t.submit : t.submitEmail}
+          <button type="submit" className="btn-primary" disabled={status === 'sending'}>
+            {status === 'sending' ? t.sending : usesEndpoint ? t.submit : t.submitEmail}
           </button>
         </div>
         {!usesEndpoint && <p className="text-[13px] text-slate">{t.emailFallbackNote}</p>}
         <div ref={statusRef} tabIndex={-1} aria-live="polite" className="outline-none">
-          {status.state === 'mailto' && (
-            <p className="rounded-md border border-line bg-mist px-4 py-3 text-[14px] text-charcoal">
+          {status === 'mailto' && (
+            <p className="rounded-xl border border-line bg-sand px-4 py-3 text-[14px] text-charcoal">
               {t.emailOpened}{' '}
               <a href={`mailto:${site.email}`} className="font-medium text-navy underline" dir="ltr">
                 {site.email}
               </a>
             </p>
           )}
-          {status.state === 'error' && (
-            <p role="alert" className="rounded-md bg-red-50 px-4 py-3 text-[14px] text-red-800">
+          {status === 'error' && (
+            <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-[14px] text-red-800">
               {t.errors.network}{' '}
               <a href={`mailto:${site.email}`} className="font-medium underline" dir="ltr">
                 {site.email}
