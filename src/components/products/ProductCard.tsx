@@ -6,7 +6,7 @@ import { asset } from '@/config/site';
 export function ProductCard({ to, image, name, subtitle, tag, index, size = 'md' }: { to: string; image: string; name: string; subtitle?: string; tag?: string; index?: number; size?: 'md' | 'lg' }) {
   return (
     <TiltCard className="h-full rounded-[22px]">
-      <Link href={to} className="group relative block h-full overflow-hidden rounded-[22px] bg-ink text-white shadow-[0_30px_60px_-35px_rgba(11,21,36,0.6)]">
+      <Link href={to} className="group relative block h-full overflow-hidden rounded-[22px] bg-ink text-white shadow-[0_30px_60px_-35px_rgba(24,25,27,0.6)]">
         <div className={`relative overflow-hidden ${size === 'lg' ? 'aspect-[4/5]' : 'aspect-[4/4.6]'}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img

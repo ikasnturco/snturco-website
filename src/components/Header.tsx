@@ -29,7 +29,7 @@ export function LanguageSwitcher({ locale, label, tone, className = '' }: { loca
       <summary
         aria-label={`${label}: ${localeMeta[locale].label}`}
         className={`flex cursor-pointer list-none items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12.5px] font-medium tracking-wide transition [&::-webkit-details-marker]:hidden ${
-          tone === 'light' ? 'border-white/25 text-white hover:border-white/60' : 'border-navy/15 text-navy hover:border-navy/40'
+          tone === 'light' ? 'border-white/20 text-white hover:border-champagne' : 'border-navy/15 text-navy hover:border-navy/40'
         }`}
       >
         <svg width="14" height="14" viewBox="0 0 32 32" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2">
@@ -38,7 +38,7 @@ export function LanguageSwitcher({ locale, label, tone, className = '' }: { loca
         </svg>
         {localeMeta[locale].short}
       </summary>
-      <nav aria-label={label} className="absolute end-0 top-full z-50 mt-3 w-48 overflow-hidden rounded-xl border border-line bg-white p-1.5 shadow-2xl shadow-navy/10">
+      <nav aria-label={label} className="absolute end-0 top-full z-50 mt-3 w-48 overflow-hidden rounded-xl border border-white/10 bg-navy-900 p-1.5">
         {locales.map((l) => (
           <Link
             key={l}
@@ -47,10 +47,10 @@ export function LanguageSwitcher({ locale, label, tone, className = '' }: { loca
             lang={l}
             aria-current={l === locale ? 'true' : undefined}
             onClick={() => ref.current && (ref.current.open = false)}
-            className={`flex items-center justify-between rounded-lg px-3 py-2 text-[14px] transition hover:bg-sand ${l === locale ? 'font-medium text-navy' : 'text-charcoal'}`}
+            className={`flex items-center justify-between rounded-lg px-3 py-2 text-[14px] transition hover:bg-white/5 ${l === locale ? 'text-champagne' : 'text-white/80'}`}
           >
             <span>{localeMeta[l].label}</span>
-            <span className="text-[11px] text-slate">{localeMeta[l].short}</span>
+            <span className="text-[11px] text-grey">{localeMeta[l].short}</span>
           </Link>
         ))}
       </nav>
@@ -92,16 +92,16 @@ export function Header({ locale, dict }: Props) {
   const isActive = (s: string) => (s === '' ? path === '' : path === s || path.startsWith(`${s}/`));
   const productsActive = productLinks.some((l) => isActive(l.slug));
   const solid = scrolled || open;
-  const tone: 'light' | 'dark' = solid ? 'dark' : 'light';
+  const tone: 'light' | 'dark' = 'light'; // header is always on anthracite
   const linkCls = (active: boolean) =>
     `relative whitespace-nowrap py-2 text-[14px] tracking-wide transition ${
-      tone === 'light' ? (active ? 'text-white' : 'text-white/75 hover:text-white') : active ? 'text-navy' : 'text-charcoal/75 hover:text-navy'
-    } ${active ? 'after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:bg-copper' : ''}`;
+      tone === 'light' ? (active ? 'text-white' : 'text-white/70 hover:text-champagne') : active ? 'text-navy' : 'text-charcoal/75 hover:text-navy'
+    } ${active ? 'after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:bg-champagne' : ''}`;
 
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-[background-color,transform,box-shadow,backdrop-filter] duration-500 ease-cine ${
-        solid ? 'bg-sand-50/90 shadow-[0_1px_0_rgba(20,36,59,0.08)] backdrop-blur-xl' : 'bg-transparent'
+        solid ? 'bg-ink/90 shadow-[0_1px_0_rgba(241,238,233,0.08)] backdrop-blur-xl' : 'bg-transparent'
       } ${hidden && !open ? '-translate-y-full' : ''}`}
     >
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:start-4 focus:top-3 focus:z-50 focus:rounded focus:bg-navy focus:px-3 focus:py-2 focus:text-white">
@@ -127,9 +127,9 @@ export function Header({ locale, dict }: Props) {
               </svg>
             </Link>
             <div className="invisible absolute start-1/2 top-full z-50 w-60 -translate-x-1/2 pt-4 opacity-0 transition duration-300 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 rtl:translate-x-1/2">
-              <div className="rounded-2xl border border-line bg-white p-2 shadow-2xl shadow-navy/10">
+              <div className="rounded-xl border border-white/10 bg-navy-900 p-2">
                 {productLinks.map((l) => (
-                  <Link key={l.slug} href={href(locale, l.slug)} className={`block rounded-xl px-4 py-2.5 text-[14px] transition hover:bg-sand ${isActive(l.slug) ? 'font-medium text-navy' : 'text-charcoal'}`}>
+                  <Link key={l.slug} href={href(locale, l.slug)} className={`block rounded-lg px-4 py-2.5 text-[14px] transition hover:bg-white/5 hover:text-champagne ${isActive(l.slug) ? 'text-champagne' : 'text-white/80'}`}>
                     {l.label}
                   </Link>
                 ))}
@@ -146,7 +146,7 @@ export function Header({ locale, dict }: Props) {
 
         <div className="flex items-center gap-3">
           <LanguageSwitcher locale={locale} label={n.language} tone={tone} className="hidden sm:block" />
-          <Link href={href(locale, 'request-a-quote')} className={`hidden whitespace-nowrap md:inline-flex ${tone === 'light' ? 'btn-ghost-light !py-2.5' : 'btn-primary !py-2.5'}`}>
+          <Link href={href(locale, 'request-a-quote')} className={`hidden whitespace-nowrap md:inline-flex ${'btn-copper !py-2.5'}`}>
             {n.quote}
           </Link>
           <button
@@ -165,28 +165,28 @@ export function Header({ locale, dict }: Props) {
       </div>
 
       {open && (
-        <div id="mobile-menu" className="h-[calc(100dvh-84px)] overflow-y-auto border-t border-line bg-sand-50 lg:hidden">
+        <div id="mobile-menu" className="h-[calc(100dvh-68px)] overflow-y-auto border-t border-white/10 bg-ink lg:hidden">
           <nav aria-label="Mobile" className="container flex flex-col py-6">
             {[{ slug: '', label: n.home }, { slug: 'about', label: n.about }].map((l) => (
-              <Link key={l.slug || 'home'} href={href(locale, l.slug)} className={`border-b border-line py-4 font-display text-[26px] ${isActive(l.slug) ? 'text-copper' : 'text-navy'}`}>
+              <Link key={l.slug || 'home'} href={href(locale, l.slug)} className={`border-b border-white/10 py-4 font-display text-[26px] ${isActive(l.slug) ? 'text-champagne' : 'text-white'}`}>
                 {l.label}
               </Link>
             ))}
-            <p className="pt-5 text-[12px] font-semibold uppercase tracking-[0.2em] text-slate">{n.products}</p>
+            <p className="pt-5 text-[12px] font-semibold uppercase tracking-[0.2em] text-grey">{n.products}</p>
             {productLinks.map((l) => (
-              <Link key={l.slug} href={href(locale, l.slug)} className={`border-b border-line py-3 ps-4 text-[18px] ${isActive(l.slug) ? 'text-copper' : 'text-navy'}`}>
+              <Link key={l.slug} href={href(locale, l.slug)} className={`border-b border-white/10 py-3 ps-4 text-[18px] ${isActive(l.slug) ? 'text-champagne' : 'text-white/80'}`}>
                 {l.label}
               </Link>
             ))}
             {[{ slug: 'partners', label: n.partners }, { slug: 'contact', label: n.contact }].map((l) => (
-              <Link key={l.slug} href={href(locale, l.slug)} className={`border-b border-line py-4 font-display text-[26px] ${isActive(l.slug) ? 'text-copper' : 'text-navy'}`}>
+              <Link key={l.slug} href={href(locale, l.slug)} className={`border-b border-white/10 py-4 font-display text-[26px] ${isActive(l.slug) ? 'text-champagne' : 'text-white'}`}>
                 {l.label}
               </Link>
             ))}
             <Link href={href(locale, 'request-a-quote')} className="btn-copper mt-8">
               {n.quote}
             </Link>
-            <LanguageSwitcher locale={locale} label={n.language} tone="dark" className="mt-6 self-start [&>nav]:bottom-full [&>nav]:end-auto [&>nav]:start-0 [&>nav]:top-auto [&>nav]:mb-2" />
+            <LanguageSwitcher locale={locale} label={n.language} tone="light" className="mt-6 self-start [&>nav]:bottom-full [&>nav]:end-auto [&>nav]:start-0 [&>nav]:top-auto [&>nav]:mb-2" />
           </nav>
         </div>
       )}

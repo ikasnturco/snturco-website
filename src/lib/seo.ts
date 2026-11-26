@@ -50,18 +50,17 @@ export function organizationJsonLd(locale: Locale) {
     description: dict.meta.siteDescription,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: site.address.street,
-      postalCode: site.address.postalCode,
       addressLocality: site.address.city,
       addressCountry: site.address.countryCode,
     },
+    telephone: site.phones[0],
     contactPoint: [
       {
         '@type': 'ContactPoint',
         contactType: 'sales',
         email: site.email,
-        ...(site.phone ? { telephone: site.phone } : {}),
-        availableLanguage: ['English', 'Turkish'],
+        telephone: site.phones[0],
+        availableLanguage: ['English', 'Turkish', 'German', 'Portuguese', 'Italian', 'Russian', 'Arabic'],
       },
     ],
     knowsAbout: ['Yarn trading', 'Cotton yarn', 'Polyester yarn', 'Viscose yarn', 'Wool yarn', 'Linen yarn', 'Textile sourcing'],

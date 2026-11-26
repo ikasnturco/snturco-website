@@ -25,7 +25,7 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export const viewport: Viewport = { themeColor: '#0b1524', width: 'device-width', initialScale: 1 };
+export const viewport: Viewport = { themeColor: '#18191b', width: 'device-width', initialScale: 1 };
 
 export const metadata = {
   icons: { icon: [{ url: asset('/favicon.svg'), type: 'image/svg+xml' }, { url: asset('/favicon.ico'), sizes: '32x32' }], apple: asset('/apple-touch-icon.png') },

@@ -11,7 +11,7 @@ export type ShotOptions = { look: FibreLook; seed: number; aspect: number; tint?
 
 function darkBg(scene: THREE.Scene, seed: number) {
   const r = rng(seed);
-  scene.background = gradientTexture('#1a2c47', brand.navy900, { color: brand.copper, x: 0.2 + r() * 0.6, y: 0.15 + r() * 0.3, r: 0.55, a: 0.22 });
+  scene.background = gradientTexture('#2e2f33', brand.navy900, { color: brand.copper, x: 0.2 + r() * 0.6, y: 0.15 + r() * 0.3, r: 0.55, a: 0.22 });
   scene.fog = new THREE.Fog(brand.navy900, 14, 34);
 }
 

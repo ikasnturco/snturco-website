@@ -44,14 +44,14 @@ function cameraAt(t: number, pos: THREE.Vector3, look: THREE.Vector3) {
 
 export const storyYarns = [
   { key: 'cotton', color: '#efe6d4' },
-  { key: 'polyester', color: '#5d7192' },
-  { key: 'viscose', color: '#a5643d' },
+  { key: 'polyester', color: '#f4f5f6' },
+  { key: 'viscose', color: '#c6a98e' },
   { key: 'wool', color: '#e3d4b6' },
 ] as const;
 
 export function createStory({ aspect, quality = 1 }: { aspect: number; quality?: number }) {
   const scene = new THREE.Scene();
-  scene.background = gradientTexture('#182a44', brand.navy900, { color: brand.copper, x: 0.72, y: 0.22, r: 0.6, a: 0.18 }, 1600, 900);
+  scene.background = gradientTexture('#2b2c30', brand.navy900, { color: brand.copper, x: 0.72, y: 0.22, r: 0.6, a: 0.18 }, 1600, 900);
   scene.fog = new THREE.Fog(brand.navy900, 40, 130);
   lightRig(scene, { key: 2.8, rim: 2.8, fill: 0.7 });
   const portrait = aspect < 1;

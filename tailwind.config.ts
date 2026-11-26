@@ -1,20 +1,28 @@
 import type { Config } from 'tailwindcss';
 
-/** SNTURCO design tokens: navy + copper, warm sand neutrals. Kept from the original brand. */
+/** SNTURCO design tokens: Dark Luxury (anthracite #202124, off-white #F1EEE9, champagne #C6A98E, taupe #B8AAA0, grey #858B91). */
 const config: Config = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     container: { center: true, padding: { DEFAULT: '1.25rem', md: '2rem', xl: '2.5rem' }, screens: { '2xl': '1280px' } },
     extend: {
       colors: {
-        ink: '#0b1524',
-        navy: { DEFAULT: '#14243b', 950: '#0b1524', 900: '#0d1828', 800: '#14243b', 700: '#1d3352', 600: '#2a4468', 400: '#5d7192' },
-        charcoal: '#2b2f36',
-        slate: '#5c6470',
-        mist: '#eef0f3',
-        line: '#e3ded5',
-        sand: { DEFAULT: '#f5f1ea', 50: '#faf8f4', 200: '#ebe4d8', 300: '#ddd3c3' },
-        copper: { DEFAULT: '#a86b45', 700: '#7d4f33', 600: '#8f5a39', 400: '#c08560', 300: '#d0a385', 200: '#e6c9b4' },
+        // DARK LUXURY – ANTHRACITE & CHAMPAGNE. Token names kept from v1 so components stay readable:
+        // navy/ink = anthracite family, copper = champagne family, sand = off-white family.
+        white: '#F8F6F2',
+        ink: '#18191B',
+        anthracite: '#202124',
+        offwhite: '#F1EEE9',
+        champagne: '#C6A98E',
+        taupe: '#B8AAA0',
+        grey: '#858B91',
+        navy: { DEFAULT: '#202124', 950: '#151618', 900: '#1B1C1E', 800: '#202124', 700: '#2A2B2E', 600: '#36373B', 400: '#858B91' },
+        charcoal: '#2A2B2E',
+        slate: '#5E6369',
+        mist: '#E7E3DD',
+        line: '#DDD7CF',
+        sand: { DEFAULT: '#E9E5DF', 50: '#F1EEE9', 200: '#E2DCD4', 300: '#B8AAA0' },
+        copper: { DEFAULT: '#C6A98E', 700: '#7A604B', 600: '#B4967A', 400: '#D1B9A2', 300: '#C6A98E', 200: '#DCCAB8' },
       },
       fontFamily: {
         sans: ['"Inter Variable"', '"IBM Plex Sans Arabic"', 'system-ui', 'sans-serif'],

@@ -7,11 +7,11 @@
     -webkit-text-size-adjust: 100%;
   }
   body {
-    @apply bg-sand-50 font-sans text-charcoal antialiased;
+    @apply bg-ink font-sans text-charcoal antialiased;
     font-feature-settings: 'cv11', 'ss01';
   }
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-copper;
+    @apply outline-2 outline-offset-2 outline-champagne;
   }
   ::selection {
     @apply bg-copper/25;
@@ -57,19 +57,22 @@
     font-size: 13px;
   }
   .btn {
-    @apply inline-flex items-center justify-center gap-2.5 rounded-full px-6 py-3.5 text-[15px] font-medium transition duration-300 ease-cine disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center gap-2.5 rounded-full px-6 py-3.5 text-[14.5px] font-medium tracking-[0.02em] transition duration-300 ease-cine disabled:cursor-not-allowed disabled:opacity-60;
   }
   .btn-primary {
-    @apply btn bg-navy text-white hover:bg-navy-700;
+    @apply btn bg-anthracite text-offwhite hover:bg-navy-600;
   }
   .btn-copper {
-    @apply btn bg-copper text-white shadow-[0_10px_30px_-12px_rgba(168,107,69,0.7)] hover:bg-copper-600;
+    @apply btn bg-champagne font-semibold text-anthracite hover:bg-copper-200;
   }
   .btn-outline {
-    @apply btn border border-navy/20 text-navy hover:border-navy hover:bg-navy hover:text-white;
+    @apply btn border border-anthracite/25 text-anthracite hover:border-anthracite hover:bg-anthracite hover:text-offwhite;
+  }
+  .btn-whatsapp {
+    @apply btn border border-offwhite/20 bg-offwhite font-semibold text-anthracite hover:bg-white [&>svg]:text-[#1DA851];
   }
   .btn-ghost-light {
-    @apply btn border border-white/25 text-white backdrop-blur-sm hover:border-white hover:bg-white hover:text-navy;
+    @apply btn border border-offwhite/25 text-offwhite hover:border-champagne hover:text-champagne;
   }
   .card-surface {
     @apply rounded-2xl border border-line bg-white;

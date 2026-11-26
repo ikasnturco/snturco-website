@@ -6,18 +6,18 @@ import type { FibreLook } from './yarn';
  */
 export const looks: Record<string, FibreLook> = {
   cotton: { color: '#efe6d4', jitter: 0.1, roughness: 0.82, sheen: 0.7, filament: false, staple: 9, hair: 0.75, crimp: 0.05, slub: 0.12, fibre: 0.021, twistDeg: 28, plies: 2 },
-  polyester: { color: '#f3f5f7', jitter: 0.03, roughness: 0.28, sheen: 0.2, clearcoat: 0.4, filament: true, staple: 0, hair: 0.02, crimp: 0, slub: 0, fibre: 0.03, twistDeg: 8, plies: 1 },
-  viscose: { color: '#f1ebe2', jitter: 0.05, roughness: 0.26, sheen: 0.5, clearcoat: 0.25, filament: true, staple: 0, hair: 0.08, crimp: 0.02, slub: 0, fibre: 0.027, twistDeg: 16, plies: 1 },
-  acrylic: { color: '#f2eee8', jitter: 0.08, roughness: 0.7, sheen: 0.8, filament: false, staple: 12, hair: 0.6, crimp: 0.35, slub: 0.05, fibre: 0.027, twistDeg: 18, plies: 2 },
-  nylon: { color: '#f5f7fa', jitter: 0.02, roughness: 0.18, sheen: 0.15, clearcoat: 0.6, filament: true, staple: 0, hair: 0, crimp: 0, slub: 0, fibre: 0.036, twistDeg: 5, plies: 1 },
+  polyester: { color: '#f4f6f8', jitter: 0.03, roughness: 0.24, sheen: 0.2, clearcoat: 0.5, filament: true, staple: 0, hair: 0.02, crimp: 0, slub: 0, fibre: 0.028, twistDeg: 7, plies: 1 },
+  viscose: { color: '#f6f1e8', jitter: 0.04, roughness: 0.2, sheen: 0.55, clearcoat: 0.35, filament: true, staple: 0, hair: 0.06, crimp: 0.02, slub: 0, fibre: 0.026, twistDeg: 16, plies: 1 },
+  acrylic: { color: '#f3f0ea', jitter: 0.07, roughness: 0.86, sheen: 0.85, filament: false, staple: 12, hair: 0.72, crimp: 0.45, slub: 0.05, fibre: 0.031, twistDeg: 16, plies: 2 },
+  nylon: { color: '#f7f9fb', jitter: 0.02, roughness: 0.14, sheen: 0.15, clearcoat: 0.75, filament: true, staple: 0, hair: 0, crimp: 0, slub: 0, fibre: 0.036, twistDeg: 5, plies: 1 },
   wool: { color: '#e9ddc5', jitter: 0.12, roughness: 0.78, sheen: 0.9, filament: false, staple: 14, hair: 0.95, crimp: 1, slub: 0.15, fibre: 0.03, twistDeg: 22, plies: 2 },
   silk: { color: '#f2e6cb', jitter: 0.04, roughness: 0.16, sheen: 1, clearcoat: 0.5, filament: true, staple: 0, hair: 0.03, crimp: 0, slub: 0.02, fibre: 0.018, twistDeg: 10, plies: 2 },
   linen: { color: '#cfc2a3', jitter: 0.14, roughness: 0.62, sheen: 0.35, filament: false, staple: 40, hair: 0.35, crimp: 0, slub: 0.85, fibre: 0.03, twistDeg: 14, plies: 1 },
   bamboo: { color: '#ede7d9', jitter: 0.05, roughness: 0.34, sheen: 0.6, clearcoat: 0.15, filament: false, staple: 22, hair: 0.25, crimp: 0, slub: 0.02, fibre: 0.024, twistDeg: 20, plies: 1 },
   elastane: { color: '#f7f7f5', jitter: 0.02, roughness: 0.3, sheen: 0.1, clearcoat: 0.7, filament: true, staple: 0, hair: 0, crimp: 0, slub: 0, fibre: 0.066, twistDeg: 3, plies: 1 },
-  lycra: { color: '#f6f6f2', jitter: 0.02, roughness: 0.28, sheen: 0.1, clearcoat: 0.8, filament: true, staple: 0, hair: 0, crimp: 0, slub: 0, fibre: 0.078, twistDeg: 2, plies: 1 },
-  polyamide: { color: '#eef0f2', jitter: 0.03, roughness: 0.4, sheen: 0.4, clearcoat: 0.2, filament: true, staple: 0, hair: 0.02, crimp: 0.25, slub: 0, fibre: 0.027, twistDeg: 12, plies: 1 },
-  polypropylene: { color: '#f4f3ec', jitter: 0.02, roughness: 0.45, sheen: 0.1, clearcoat: 0.3, filament: true, staple: 0, hair: 0, crimp: 0, slub: 0, fibre: 0.048, twistDeg: 6, plies: 1 },
+  lycra: { color: '#f5f4ef', jitter: 0.02, roughness: 0.26, sheen: 0.1, clearcoat: 0.85, filament: true, staple: 0, hair: 0, crimp: 0, slub: 0, fibre: 0.078, twistDeg: 2, plies: 1 },
+  polyamide: { color: '#eff1f2', jitter: 0.03, roughness: 0.38, sheen: 0.4, clearcoat: 0.2, filament: true, staple: 0, hair: 0.02, crimp: 0.4, slub: 0, fibre: 0.027, twistDeg: 12, plies: 1 },
+  polypropylene: { color: '#f1f0e8', jitter: 0.02, roughness: 0.5, sheen: 0.1, clearcoat: 0.15, filament: true, staple: 0, hair: 0, crimp: 0, slub: 0, fibre: 0.05, twistDeg: 6, plies: 1 },
   hemp: { color: '#b8a685', jitter: 0.18, roughness: 0.72, sheen: 0.25, filament: false, staple: 30, hair: 0.6, crimp: 0, slub: 0.7, fibre: 0.042, twistDeg: 18, plies: 2 },
 };
 

@@ -31,7 +31,7 @@ export const partners: Partner[] = [
     id: 'filhos-lda',
     name: 'FILHOS, LDA',
     country: { en: 'Portugal', tr: 'Portekiz', de: 'Portugal', pt: 'Portugal', it: 'Portogallo', ru: 'Португалия', ar: 'البرتغال' },
-    address: '4100-065 Porto, Portugal',
+    address: 'Porto, Portugal',
     description: {
       en: 'Our partner company in Porto, Portugal.',
       tr: 'Porto, Portekiz’deki partner firmamız.',

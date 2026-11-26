@@ -1,16 +1,15 @@
 // What the offline renderer produces. Product images: 3 per yarn (macro, cone, fibres); cotton: 2 per variety.
 const T = process.env.TEST_OUT || 'public/images';
 
-// Tints give each yarn its own character on the page; natural fibres keep their own colour.
-const tints = { polyester: '#4a5f82', acrylic: '#a8653f', nylon: '#7b8aa3', polyamide: '#2c3b55', polypropylene: '#9aa1a8', elastane: undefined, lycra: '#c9a48a', viscose: '#e8dccb' };
-const coneTints = { cotton: undefined, wool: undefined, linen: undefined, hemp: undefined, silk: undefined, bamboo: undefined };
+// Every yarn is shown in its natural raw colour under the same studio light and the same anthracite
+// background, so the differences visitors see come from structure, thickness, hairiness and lustre only.
 const yarnSlugs = ['cotton', 'polyester', 'viscose', 'acrylic', 'nylon', 'wool', 'silk', 'linen', 'bamboo', 'elastane', 'lycra', 'polyamide', 'polypropylene', 'hemp'];
 const cottonSlugs = ['american-cotton', 'egyptian-cotton', 'turkish-cotton', 'pima-cotton', 'supima-cotton', 'giza-cotton', 'organic-cotton', 'anatolian-cotton', 'sea-island-cotton'];
 const W = 1600, H = 1200;
 const products = yarnSlugs.flatMap((key, i) => [
-  { kind: 'macro', key, tint: tints[key], w: W, h: H, seed: 11 + i * 7, ss: 2, q: 0.84, out: `${T}/yarns/${key}/macro.webp` },
-  { kind: 'cone', key, tint: tints[key] ?? coneTints[key], w: W, h: H, seed: 12 + i * 7, ss: 2, q: 0.84, background: i % 2 ? 'dark' : 'light', out: `${T}/yarns/${key}/cone.webp` },
-  { kind: 'fibres', key, tint: tints[key], w: W, h: H, seed: 13 + i * 7, ss: 2, q: 0.84, out: `${T}/yarns/${key}/fibres.webp` },
+  { kind: 'macro', key, w: W, h: H, seed: 11 + i * 7, ss: 2, q: 0.84, out: `${T}/yarns/${key}/macro.webp` },
+  { kind: 'cone', key, w: W, h: H, seed: 12 + i * 7, ss: 2, q: 0.84, background: 'dark', out: `${T}/yarns/${key}/cone.webp` },
+  { kind: 'fibres', key, w: W, h: H, seed: 13 + i * 7, ss: 2, q: 0.84, out: `${T}/yarns/${key}/fibres.webp` },
 ]);
 const cotton = cottonSlugs.flatMap((key, i) => [
   { kind: 'macro', key, cotton: true, w: W, h: H, seed: 201 + i * 5, ss: 2, q: 0.84, angle: ((i % 3) - 1) * 0.35, out: `${T}/cotton/${key}/macro.webp` },

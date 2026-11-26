@@ -1,12 +1,12 @@
 /**
- * English texts (default language). Every other language file has the same structure.
- * Product, cotton, knowledge and partner texts live in src/data/.
+ * English texts (default language). Every language file has exactly this structure (checked by TypeScript).
+ * Product, cotton and knowledge texts live in src/data/ (EN/TR) and src/data/translations/ (DE/PT/IT/RU/AR).
  */
 const en = {
   meta: {
     siteTitle: 'SNTURCO | Textile yarns from Türkiye · Porto, Portugal',
     siteDescription:
-      'SNTURCO, LDA. is a yarn sourcing and trading company in Porto, Portugal. Cotton, polyester, viscose, wool, linen and specialty yarns from producers in Türkiye, with clear terms and one contact.',
+      'SNTURCO, LDA. is a yarn sourcing and trading company based in Porto, Portugal. Cotton, polyester, viscose, wool, linen and specialty yarns from producers in Türkiye, with clear terms and one contact.',
     tagline: 'A World Woven in Quality.',
   },
   nav: {
@@ -31,6 +31,7 @@ const en = {
     discover: 'Discover SNTURCO',
     quote: 'Request a Quote',
     quoteThis: 'Request a quote for this yarn',
+    inquire: 'Send an inquiry',
     contact: 'Contact us',
     viewAll: 'View all yarns',
     viewCotton: 'Explore the cotton collection',
@@ -39,9 +40,18 @@ const en = {
     details: 'View details',
     back: 'Back',
   },
+  contact: {
+    phone: 'Phone',
+    whatsapp: 'Contact us on WhatsApp',
+    whatsappMessage: 'Hello SNTURCO, I am interested in your yarns and would like to receive more information.',
+    whatsappProduct: 'Hello SNTURCO, I would like to receive an offer for {yarn}.',
+    email: 'Email',
+    location: 'Location',
+    hours: 'We reply within one business day.',
+  },
   common: {
     breadcrumbHome: 'Home',
-    fallbackNote: 'This content is not yet translated and is shown in English.',
+    fallbackNote: 'This content is shown in English.',
     renderNote: 'Illustrative 3D render',
     categories: { all: 'All', natural: 'Natural', synthetic: 'Synthetic', regenerated: 'Regenerated', cotton: 'Cotton varieties', specialty: 'Specialty fibres' },
     levels: ['Very low', 'Low', 'Medium', 'High', 'Very high'],
@@ -52,31 +62,31 @@ const en = {
     explore: 'Explore',
     products: 'Yarns',
     cotton: 'Cotton Collection',
-    company: 'Company',
     contact: 'Contact',
     social: 'Follow us',
     rights: 'All rights reserved.',
-    profile: 'Company profile (PDF)',
   },
   home: {
     meta: {
       title: 'Threads That Connect Possibilities',
-      description: 'Discover the world of textile yarns through quality, innovation and trusted partnerships. SNTURCO sources yarn from Türkiye for manufacturers in Europe and beyond.',
+      description: 'Textile yarns from Türkiye for manufacturers in Europe and beyond: cotton, polyester, viscose, wool, linen and specialty yarns. SNTURCO, Porto, Portugal.',
     },
     hero: {
-      eyebrow: 'SNTURCO · Textile yarns · Porto',
+      eyebrow: 'SNTURCO · Textile yarns · Porto, Portugal',
       title: 'Threads That Connect Possibilities.',
       lead: 'Discover the world of textile yarns through quality, innovation and trusted partnerships.',
+      facts: ['Yarn sourcing from Türkiye', 'Office in Porto, Portugal', 'One contact from request to delivery'],
     },
-    intro: {
-      eyebrow: 'Discover SNTURCO',
-      title: 'From the right fibre to a reliable delivery.',
-      text: 'We source yarn from producers in Türkiye for knitting and weaving companies in Europe and beyond. You tell us the count, quality and quantity; we come back with clear offers, samples and one contact who follows your order to delivery.',
-      pillars: [
-        { title: 'Quality', text: 'Samples before orders and written specifications for every offer.' },
-        { title: 'Knowledge', text: 'Fourteen yarn types and nine cottons, explained plainly.' },
-        { title: 'Partnership', text: 'Suppliers we have worked with and partners in Portugal.' },
-      ],
+    categories: {
+      eyebrow: 'Our yarns',
+      title: 'Find your yarn.',
+      text: 'Fourteen yarn types and nine cottons. Choose a fibre family or open a yarn to see its structure, properties and uses.',
+      items: {
+        natural: 'Cotton, wool, silk, linen and hemp',
+        synthetic: 'Polyester, polyamide, nylon, acrylic, polypropylene and elastane',
+        regenerated: 'Viscose and bamboo viscose',
+        cotton: 'Nine cottons from six growing regions',
+      },
     },
     story: {
       eyebrow: 'Inside a yarn',
@@ -84,13 +94,13 @@ const en = {
       skip: 'Skip the animation',
       beats: [
         { title: 'A single thread.', text: 'Every fabric begins with one yarn.' },
-        { title: 'Look closer.', text: 'As you come closer, the yarn opens up.' },
+        { title: 'Look closer.', text: 'Up close, the yarn opens up.' },
         { title: 'An architecture of fibres.', text: 'Hundreds of fibres, held together by twist.' },
         { title: 'Twist released.', text: 'Untwisted, the plies and fibres separate.' },
         { title: 'Structure decides.', text: 'Fibre length, fineness and alignment decide how a yarn behaves.' },
-        { title: 'Many characters.', text: 'Each fibre type brings its own nature.' },
+        { title: 'Many characters.', text: 'Each fibre brings its own nature.' },
         { title: 'Four textures.', text: '' },
-        { title: 'Woven together.', text: 'Combined, they become fabric, form and function.' },
+        { title: 'Twisted together.', text: 'Combined, they become fabric, form and function.' },
         { title: 'From fibre to trade.', text: 'We bring the right yarn from Türkiye to your production.' },
       ],
       yarns: [
@@ -100,25 +110,23 @@ const en = {
         { name: 'Wool', text: 'Natural crimp and warmth' },
       ],
     },
-    products: {
-      eyebrow: 'Our yarns',
-      title: 'Fourteen yarn types, one contact.',
-      text: 'Natural, synthetic and regenerated fibres. Open a yarn to see its structure, properties and typical uses.',
-    },
-    cotton: {
-      eyebrow: 'Cotton collection',
-      title: 'Nine cottons, each with its own origin.',
-      text: 'From everyday American Upland to rare Sea Island: what sets each cotton apart, and what to ask for.',
+    about: {
+      eyebrow: 'Discover SNTURCO',
+      title: 'From the right fibre to a reliable delivery.',
+      text: 'We source yarn from producers in Türkiye for knitting and weaving companies in Europe and beyond. You tell us the count, quality and quantity; we come back with clear offers, samples and one contact who follows your order to delivery.',
+      pillars: [
+        { title: 'Quality', text: 'Samples before orders and written specifications for every offer.' },
+        { title: 'Expertise', text: 'Fourteen yarn types and nine cottons, explained plainly.' },
+        { title: 'Partnership', text: 'Producers we know and partners in Portugal.' },
+      ],
     },
     shipments: {
-      eyebrow: 'Shipments',
-      title: 'Every container is a delivered promise.',
-      text: 'Each container in this scene stands for a verified shipment record. The scene grows as orders are delivered.',
-      demoBadge: 'Illustrative demo',
-      demoText: 'This scene is an illustration. It does not show real shipments. Shipment figures will appear here once verified records are added.',
+      eyebrow: 'Logistics',
+      title: 'From the mill to your production.',
+      text: 'We coordinate each order from the producer in Türkiye to your warehouse, with documents and follow-up at every step.',
       counters: { shipments: 'Total Successful Shipments', containers: 'Total Containers Shipped', orders: 'Completed Orders' },
       updated: 'Last updated',
-      fallback: 'The 3D scene needs WebGL. Shipment figures are shown below.',
+      fallback: 'This 3D scene needs WebGL.',
     },
     quality: {
       eyebrow: 'Quality & sustainability',
@@ -131,8 +139,10 @@ const en = {
         { title: 'Responsible sourcing', text: 'We work with producers we know. Where certified materials are needed, we ask for valid certificates and share them with the offer. We never claim certificates we do not hold.' },
       ],
     },
-    partners: { eyebrow: 'Partners', title: 'Two partners in Portugal.', text: 'Independent companies we work with closely.' },
-    knowledge: { eyebrow: 'Textile knowledge', title: 'Understand yarn in a few minutes.', text: 'Ring or open-end, filament or staple, Ne or Nm: short answers with simple examples.' },
+    more: {
+      knowledge: { title: 'Textile knowledge', text: 'Ring or open-end, filament or staple, Ne or Nm: short answers with simple examples.' },
+      partners: { title: 'Partners', text: 'Two independent partner companies in Portugal.' },
+    },
     cta: { title: 'Tell us what yarn you need.', text: 'Send the yarn type, count, quantity and delivery destination. We reply with options and clear terms.' },
   },
   about: {
@@ -146,10 +156,10 @@ const en = {
       { key: 'quality', title: 'Quality & Trust', text: 'Every offer states price, delivery terms and timing in writing. Samples come before orders, and we follow each order against the agreed specification. We do not publish the names of suppliers or customers: your information stays confidential.' },
       { key: 'global', title: 'Global Business', text: 'Our office is in Porto and our supply base is in Türkiye. We serve knitting and weaving companies in Portugal and across the European Union and welcome inquiries from other markets. Delivery terms are agreed per order using standard Incoterms.' },
     ],
-    details: { title: 'Company details', legal: 'Legal name', address: 'Address', email: 'Email' },
+    details: { title: 'Company details', legal: 'Legal name', address: 'Location', email: 'Email' },
   },
   productsPage: {
-    meta: { title: 'All Yarns', description: 'Fourteen yarn types from natural, synthetic and regenerated fibres: cotton, polyester, viscose, acrylic, nylon, wool, silk, linen, bamboo, elastane, lycra, polyamide, polypropylene and hemp.' },
+    meta: { title: 'All Yarns', description: 'Fourteen yarn types from natural, synthetic and regenerated fibres: cotton, polyester, viscose, acrylic, nylon, wool, silk, linen, bamboo, elastane, Lycra®, polyamide, polypropylene and hemp.' },
     hero: { eyebrow: 'Products', title: 'Yarns for every fabric.', lead: 'Filter by fibre family, search by name, and compare up to four yarns side by side.' },
     search: 'Search yarns',
     searchPlaceholder: 'Search, e.g. cotton, stretch, linen',
@@ -188,14 +198,25 @@ const en = {
       note: 'Good to know',
       atAGlance: 'At a glance',
     },
+    viewer: {
+      open: 'View in 3D',
+      title: 'Interactive 3D view',
+      hint: 'Drag to rotate · scroll or pinch to zoom',
+      reset: 'Reset view',
+      close: 'Close',
+      loading: 'Loading 3D model',
+      unsupported: 'Your browser cannot show 3D content. Please see the images below.',
+      note: 'Illustrative 3D model of the yarn structure, not a photograph of a specific lot.',
+    },
     quoteTitle: 'Need this yarn?',
     quoteText: 'Send us the count, quality and quantity. We reply with options and clear terms.',
     cottonLink: 'See the cotton collection',
   },
   cottonPage: {
-    meta: { title: 'Cotton Collection', description: 'American, Egyptian, Turkish, Pima, Supima, Giza, organic, Anatolian and Sea Island cotton: origin, fibre, character and uses.' },
+    meta: { title: 'Cotton Collection', description: 'American, Egyptian, Turkish, Pima, Supima®, Giza, organic, Anatolian and Sea Island cotton: origin, fibre, character and uses.' },
     hero: { eyebrow: 'Cotton collection', title: 'Nine cottons, nine characters.', lead: 'Where each cotton comes from, what its fibre is like, and how it differs from the others.' },
     labels: { origin: 'Origin', fibre: 'Fibre structure', character: 'Character', quality: 'Quality features', uses: 'Uses', difference: 'How it differs', staple: 'Staple' },
+    next: 'Next cotton',
     note: 'Protected names and certified qualities (for example Supima® or organic) are offered only with valid documents from the supply chain.',
   },
   knowledgePage: {
@@ -208,14 +229,12 @@ const en = {
   partnersPage: {
     meta: { title: 'Our Partners', description: 'SNTURCO works with two independent partner companies in Portugal: J. R. GOMES and FILHOS, LDA.' },
     hero: { eyebrow: 'Partners', title: 'Our partners.', lead: 'Independent companies we work with closely. Each is a separate business.' },
-    labels: { partner: 'Partner', country: 'Country', address: 'Address', website: 'Website' },
+    labels: { partner: 'Partner', country: 'Country', address: 'Location', website: 'Website' },
     become: { title: 'Work with us', text: 'Producers, agents and companies interested in long-term cooperation are welcome to contact us.' },
   },
   contactPage: {
-    meta: { title: 'Contact', description: 'Contact SNTURCO, LDA. in Porto, Portugal by email or through the contact form.' },
-    hero: { eyebrow: 'Contact', title: 'Get in touch.', lead: 'Write to us about a yarn request, a partnership or any other question. We reply by email.' },
-    office: 'Office',
-    email: 'Email',
+    meta: { title: 'Contact', description: 'Contact SNTURCO, LDA. in Porto, Portugal by phone, WhatsApp, email or the contact form.' },
+    hero: { eyebrow: 'Contact', title: 'Get in touch.', lead: 'Call us, write on WhatsApp or send a message with the form. We reply within one business day.' },
     formTitle: 'Send a message',
   },
   quotePage: {
@@ -227,16 +246,16 @@ const en = {
     meta: { title: 'Privacy Policy', description: 'How SNTURCO, LDA. handles personal data sent through this website.' },
     hero: { eyebrow: 'Privacy', title: 'Privacy Policy', lead: 'Last updated: November 2026' },
     sections: [
-      { title: 'Who we are', text: 'The controller of your personal data is SNTURCO, LDA., Largo Eng. António de Almeida, 70 – 1º Sala 355, 4100-065 Porto, Portugal. Contact: ikasourcing@snturco.com.' },
-      { title: 'What we collect', text: 'When you write to us by email or through a form on this website, we receive the information you send: usually your name, company, country, email address, optionally a phone number, and the details of your request.' },
+      { title: 'Who we are', text: 'The controller of your personal data is SNTURCO, LDA., Porto, Portugal. Contact: ikasourcing@snturco.com.' },
+      { title: 'What we collect', text: 'When you write to us through a form on this website, by email or on WhatsApp, we receive the information you send: usually your name, company, country, email address, optionally a phone number, and the details of your request.' },
       { title: 'Why we use it', text: 'We use this information only to answer your request and, if we work together, to prepare and carry out the business relationship. The legal basis is steps taken at your request before a contract and our legitimate interest in answering business inquiries.' },
-      { title: 'Who receives it', text: 'Your messages are handled by our email provider and, where a form service is used, by that service on our behalf. We do not sell or share your data for marketing.' },
+      { title: 'Who receives it', text: 'Form messages are delivered to our mailbox by the form service Web3Forms on our behalf. Messages you send on WhatsApp are handled by WhatsApp (Meta). Our email is hosted by our email provider. We do not sell or share your data for marketing.' },
       { title: 'How long we keep it', text: 'We keep your messages for as long as needed to answer them and for the duration of any business relationship, and afterwards only where the law requires it.' },
       { title: 'Your rights', text: 'You can ask for access to, correction or deletion of your data, or object to its use, by writing to ikasourcing@snturco.com. You can also complain to the Portuguese data protection authority (CNPD).' },
     ],
   },
   cookiesPage: {
-    meta: { title: 'Cookie Policy', description: 'SNTURCO’s website does not use tracking or advertising cookies.' },
+    meta: { title: 'Cookie Policy', description: 'The SNTURCO website does not use tracking or advertising cookies.' },
     hero: { eyebrow: 'Cookies', title: 'Cookie Policy', lead: 'Last updated: November 2026' },
     sections: [
       { title: 'No tracking cookies', text: 'This website does not use analytics, tracking or advertising cookies, and it does not load third-party trackers.' },
@@ -265,7 +284,6 @@ const en = {
     optional: 'optional',
     select: 'Select…',
     submit: 'Send',
-    submitEmail: 'Continue in my email program',
     sending: 'Sending…',
     errors: {
       required: 'Please fill in this field.',
@@ -273,15 +291,16 @@ const en = {
       phone: 'Please enter a valid phone number.',
       consent: 'Please confirm to continue.',
       summary: 'Please check the highlighted fields.',
-      network: 'Your message could not be sent. Please try again, or write to us directly at',
+      network: 'Your message could not be sent. Please try again in a moment, or write to us directly at',
+      duplicate: 'This message has already been sent.',
+      config: 'The form is temporarily unavailable. Please write to us directly at',
     },
-    success: 'Thank you. Your message has been sent. We will reply by email.',
-    emailFallbackNote: 'This form opens your email program with your message ready. It is sent only when you press send there.',
-    emailOpened: 'Your email program should now be open with your message. Please press send there. If nothing opened, write to us at',
+    success: 'Thank you. Your message has been sent and we will reply by email within one business day.',
+    sendAnother: 'Send another message',
     mailSubjects: { quote: 'Quote request', contact: 'Message' },
   },
   notFound: { title: 'Page not found', text: 'The page you are looking for does not exist or has moved.', back: 'Back to the home page' },
 };
 
-export default en;
 export type Dictionary = typeof en;
+export default en;

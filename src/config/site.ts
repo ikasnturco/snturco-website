@@ -8,25 +8,38 @@ export const site = {
   url: (process.env.NEXT_PUBLIC_SITE_URL || 'https://snturco.com').replace(/\/$/, ''),
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
   email: 'ikasourcing@snturco.com',
+  /** Only the city is shown on the site (İbrahim, 26 Nov 2026). */
   address: {
-    street: 'Largo Eng. António de Almeida, 70 – 1º Sala 355',
-    postalCode: '4100-065',
     city: 'Porto',
     country: 'Portugal',
     countryCode: 'PT',
   },
-  /** Phone number in international format, e.g. '+351900000000'. Empty = not shown. */
-  phone: '',
-  /** WhatsApp number, digits only with country code, e.g. '351900000000'. Empty = WhatsApp button hidden. */
-  whatsapp: '',
+  /** Phone numbers shown on the contact page and footer (international format). */
+  phones: ['+49 162 564 1453', '+90 535 701 4603'],
+  /** WhatsApp number, digits only with country code. */
+  whatsapp: '491625641453',
   /** Social media links (full URLs). Empty = hidden in the footer. */
   linkedin: '',
   instagram: '',
-  /** Public form endpoint (see .env.example). Empty = email fallback. */
-  formEndpoint: process.env.NEXT_PUBLIC_FORM_ENDPOINT || '',
+  /**
+   * Direct email sending through Web3Forms (https://web3forms.com, free plan).
+   * The access key is public by design: it can only deliver messages to the inbox it was created for
+   * (ikasourcing@snturco.com). A repository variable FORM_ACCESS_KEY overrides it.
+   */
+  formEndpoint: process.env.NEXT_PUBLIC_FORM_ENDPOINT || 'https://api.web3forms.com/submit',
   formAccessKey: process.env.NEXT_PUBLIC_FORM_ACCESS_KEY || '',
 } as const;
 
 export function asset(path: string) {
   return `${site.basePath}${path}`;
+}
+
+/** tel: link for a displayed phone number. */
+export function telHref(phone: string) {
+  return `tel:${phone.replace(/[^+\d]/g, '')}`;
+}
+
+/** WhatsApp click-to-chat link with a pre-filled message (works on desktop and mobile). */
+export function whatsappHref(message: string) {
+  return `https://wa.me/${site.whatsapp}?text=${encodeURIComponent(message)}`;
 }

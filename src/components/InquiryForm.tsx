@@ -7,11 +7,12 @@ import { href, type Locale } from '@/i18n/config';
 import type { Dictionary } from '@/locales';
 
 /**
- * Quote and contact form.
- * - With NEXT_PUBLIC_FORM_ENDPOINT set, it POSTs JSON to that endpoint and shows success only
- *   when the endpoint confirms delivery.
- * - Without it, it opens the visitor's email program with the message ready (mailto). It never
- *   claims a message was sent when it was not.
+ * Quote and contact form. Sends a real email to site.email through Web3Forms (server-side delivery,
+ * server-side validation and spam filtering by Web3Forms).
+ * - Success is shown only when the service confirms delivery (HTTP 200 and success: true).
+ * - Without an access key it shows a clear "temporarily unavailable" message, never a fake success.
+ * - Spam: hidden botcheck honeypot (checked by Web3Forms) and a minimum fill time.
+ * - Duplicates: the button is locked while sending, and an identical message cannot be sent twice in the same session.
  */
 type Kind = 'quote' | 'contact';
 type FieldType = 'text' | 'email' | 'tel' | 'textarea' | 'select';
@@ -41,7 +42,30 @@ function fieldsFor(kind: Kind, t: Dictionary['form']): Field[] {
   return [...head, { name: 'subject', label: f.subject, type: 'text', required: true }, { name: 'message', label: f.message, type: 'textarea', required: true, wide: true }];
 }
 
-type Status = 'idle' | 'sending' | 'sent' | 'mailto' | 'error';
+type Status = 'idle' | 'sending' | 'sent' | 'error' | 'duplicate' | 'config';
+
+const SENT_KEY = 'snturco-form-sent';
+function fingerprint(v: Record<string, string>) {
+  const text = Object.keys(v).sort().map((k) => `${k}=${(v[k] || '').trim().toLowerCase()}`).join('&');
+  let h = 5381;
+  for (let i = 0; i < text.length; i++) h = ((h << 5) + h + text.charCodeAt(i)) | 0;
+  return String(h >>> 0);
+}
+function sentBefore(fp: string) {
+  try {
+    return (JSON.parse(sessionStorage.getItem(SENT_KEY) || '[]') as string[]).includes(fp);
+  } catch {
+    return false;
+  }
+}
+function rememberSent(fp: string) {
+  try {
+    const list = JSON.parse(sessionStorage.getItem(SENT_KEY) || '[]') as string[];
+    sessionStorage.setItem(SENT_KEY, JSON.stringify([...list, fp].slice(-20)));
+  } catch {
+    /* storage unavailable: the locked button still prevents double clicks */
+  }
+}
 
 export function InquiryForm({ kind, locale, t, privacyLabel, yarnGroups = [] }: { kind: Kind; locale: Locale; t: Dictionary['form']; privacyLabel: string; yarnGroups?: YarnGroup[] }) {
   const fields = fieldsFor(kind, t);
@@ -51,7 +75,9 @@ export function InquiryForm({ kind, locale, t, privacyLabel, yarnGroups = [] }: 
   const [status, setStatus] = useState<Status>('idle');
   const formRef = useRef<HTMLFormElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
-  const usesEndpoint = Boolean(site.formEndpoint);
+  const configured = Boolean(site.formEndpoint && site.formAccessKey);
+  const startedAt = useRef(Date.now());
+  const sending = useRef(false);
   const idPrefix = kind;
   const allYarns = yarnGroups.flatMap((g) => g.options);
 
@@ -64,7 +90,7 @@ export function InquiryForm({ kind, locale, t, privacyLabel, yarnGroups = [] }: 
   }, [kind]);
 
   useEffect(() => {
-    if (status === 'sent' || status === 'mailto' || status === 'error') statusRef.current?.focus();
+    if (status === 'sent' || status === 'error' || status === 'duplicate' || status === 'config') statusRef.current?.focus();
   }, [status]);
 
   function validate() {
@@ -84,56 +110,68 @@ export function InquiryForm({ kind, locale, t, privacyLabel, yarnGroups = [] }: 
     return f.type === 'select' ? (allYarns.find((o) => o.value === raw)?.label ?? raw) : raw;
   };
 
-  function summaryText() {
-    return fields
-      .filter((f) => (values[f.name] || '').trim())
-      .map((f) => (f.type === 'textarea' ? `\n${f.label}:\n${shown(f)}` : `${f.label}: ${shown(f)}`))
-      .join('\n');
-  }
-
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (sending.current) return;
     const data = new FormData(e.currentTarget);
-    if (data.get('company_website')) return; // honeypot
+    const botcheck = Boolean(data.get('botcheck'));
 
     const found = validate();
     setErrors(found);
     if (Object.keys(found).length) {
+      setStatus('idle');
       formRef.current?.querySelector<HTMLElement>(`[name="${Object.keys(found)[0]}"]`)?.focus();
+      return;
+    }
+    if (!configured) {
+      setStatus('config');
+      return;
+    }
+    const fp = fingerprint({ kind, ...values });
+    if (sentBefore(fp)) {
+      setStatus('duplicate');
       return;
     }
 
     const who = values.company || `${values.firstName} ${values.lastName}`;
-    const topic = kind === 'quote' ? shown(fields.find((f) => f.name === 'yarn')!) : values.subject;
+    const yarnField = fields.find((f) => f.name === 'yarn');
+    const topic = kind === 'quote' && yarnField ? shown(yarnField) : values.subject;
     const subject = `${t.mailSubjects[kind]}: ${topic} – ${who} (snturco.com)`;
 
-    if (!usesEndpoint) {
-      window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(summaryText())}`;
-      setStatus('mailto');
-      return;
-    }
-
+    sending.current = true;
     setStatus('sending');
     try {
-      const payload: Record<string, string> = { subject, form: kind, language: locale, ...values, consent: 'yes' };
-      if (kind === 'quote' && values.yarn) payload.yarnName = shown(fields.find((f) => f.name === 'yarn')!);
-      if (site.formAccessKey) {
-        payload.access_key = site.formAccessKey;
-        payload.from_name = 'SNTURCO website';
+      const payload: Record<string, string | boolean> = {
+        access_key: site.formAccessKey,
+        subject,
+        from_name: 'SNTURCO website',
+        replyto: values.email.trim(),
+        form: kind === 'quote' ? 'Quote request' : 'Contact',
+        language: locale,
+        page: window.location.href,
+      };
+      for (const f of fields) {
+        const v = shown(f);
+        if (v) payload[f.label] = v;
       }
-      payload.replyto = values.email;
+      payload.consent = 'yes';
+      // Bots usually submit instantly; a human needs a few seconds. Web3Forms rejects messages with botcheck set.
+      if (botcheck || Date.now() - startedAt.current < 2500) payload.botcheck = true;
       const res = await fetch(site.formEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify(payload),
       });
-      const json = (await res.json().catch(() => ({}))) as { success?: boolean; ok?: boolean };
-      if (!res.ok || json.success === false || json.ok === false) throw new Error(`HTTP ${res.status}`);
+      const json = (await res.json().catch(() => ({}))) as { success?: boolean };
+      if (!res.ok || json.success !== true) throw new Error(`HTTP ${res.status}`);
+      rememberSent(fp);
       setStatus('sent');
       setValues({});
       setConsent(false);
     } catch {
       setStatus('error');
+    } finally {
+      sending.current = false;
     }
   }
 
@@ -144,8 +182,18 @@ export function InquiryForm({ kind, locale, t, privacyLabel, yarnGroups = [] }: 
 
   if (status === 'sent') {
     return (
-      <div ref={statusRef} tabIndex={-1} role="status" className="rounded-2xl border border-emerald-700/20 bg-emerald-50 p-6 text-emerald-900 outline-none">
-        {t.success}
+      <div ref={statusRef} tabIndex={-1} role="status" className="rounded-2xl border border-emerald-700/20 bg-emerald-50 p-6 text-emerald-900 outline-none" data-form-status="sent">
+        <p className="text-[15.5px] leading-relaxed">{t.success}</p>
+        <button
+          type="button"
+          className="btn-outline mt-5"
+          onClick={() => {
+            startedAt.current = Date.now();
+            setStatus('idle');
+          }}
+        >
+          {t.sendAnother}
+        </button>
       </div>
     );
   }
@@ -179,7 +227,7 @@ export function InquiryForm({ kind, locale, t, privacyLabel, yarnGroups = [] }: 
             <label htmlFor={id} className="text-[14px] font-medium text-navy">
               {field.label}
               {field.required ? (
-                <span className="text-copper" aria-hidden="true">
+                <span className="text-copper-700" aria-hidden="true">
                   {' '}*
                 </span>
               ) : (
@@ -218,10 +266,10 @@ export function InquiryForm({ kind, locale, t, privacyLabel, yarnGroups = [] }: 
         );
       })}
 
-      {/* Honeypot: hidden from people, often filled by bots. */}
+      {/* Honeypot (Web3Forms botcheck): hidden from people, often ticked by bots. */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
-        <label htmlFor={`${idPrefix}-hp`}>Company website</label>
-        <input id={`${idPrefix}-hp`} name="company_website" tabIndex={-1} autoComplete="off" />
+        <label htmlFor={`${idPrefix}-hp`}>Do not tick</label>
+        <input id={`${idPrefix}-hp`} type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" />
       </div>
 
       <div className="sm:col-span-2">
@@ -255,26 +303,22 @@ export function InquiryForm({ kind, locale, t, privacyLabel, yarnGroups = [] }: 
 
       <div className="flex flex-col gap-3 sm:col-span-2">
         <div>
-          <button type="submit" className="btn-primary" disabled={status === 'sending'}>
-            {status === 'sending' ? t.sending : usesEndpoint ? t.submit : t.submitEmail}
+          <button type="submit" className="btn-primary min-w-[160px]" disabled={status === 'sending'} aria-busy={status === 'sending' || undefined}>
+            {status === 'sending' ? t.sending : t.submit}
           </button>
         </div>
-        {!usesEndpoint && <p className="text-[13px] text-slate">{t.emailFallbackNote}</p>}
         <div ref={statusRef} tabIndex={-1} aria-live="polite" className="outline-none">
-          {status === 'mailto' && (
-            <p className="rounded-xl border border-line bg-sand px-4 py-3 text-[14px] text-charcoal">
-              {t.emailOpened}{' '}
-              <a href={`mailto:${site.email}`} className="font-medium text-navy underline" dir="ltr">
+          {(status === 'error' || status === 'config') && (
+            <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-[14px] text-red-800" data-form-status={status}>
+              {status === 'config' ? t.errors.config : t.errors.network}{' '}
+              <a href={`mailto:${site.email}`} className="font-medium underline" dir="ltr">
                 {site.email}
               </a>
             </p>
           )}
-          {status === 'error' && (
-            <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-[14px] text-red-800">
-              {t.errors.network}{' '}
-              <a href={`mailto:${site.email}`} className="font-medium underline" dir="ltr">
-                {site.email}
-              </a>
+          {status === 'duplicate' && (
+            <p role="alert" className="rounded-xl border border-line bg-sand px-4 py-3 text-[14px] text-charcoal" data-form-status="duplicate">
+              {t.errors.duplicate}
             </p>
           )}
         </div>

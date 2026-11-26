@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { PageHero, CtaBand, SectionTitle, ArrowLink } from '@/components/ui';
 import { InquiryForm, type YarnGroup } from '@/components/InquiryForm';
-import { site, asset } from '@/config/site';
+import { ContactList, WhatsAppButton } from '@/components/ContactLinks';
+import { site, asset, telHref } from '@/config/site';
 import { href, tx, type Locale } from '@/i18n/config';
 import type { Dictionary } from '@/locales';
 import { partners } from '@/data/partners';
@@ -22,7 +23,7 @@ export function AboutView({ locale, dict }: { locale: Locale; dict: Dictionary }
           <div className="grid gap-px overflow-hidden rounded-[22px] bg-line md:grid-cols-2">
             {a.sections.map((s, i) => (
               <article key={s.key} id={s.key} className={`reveal p-8 md:p-12 ${i === 0 ? 'bg-navy text-white md:col-span-2' : 'bg-white'}`}>
-                <p className={`text-[12px] tabular-nums tracking-[0.25em] ${i === 0 ? 'text-copper-300' : 'text-copper'}`}>{String(i + 1).padStart(2, '0')}</p>
+                <p className={`text-[12px] tabular-nums tracking-[0.25em] ${i === 0 ? 'text-copper-300' : 'text-copper-700'}`}>{String(i + 1).padStart(2, '0')}</p>
                 <h2 className={`display mt-4 text-[clamp(1.8rem,3vw,2.6rem)] ${i === 0 ? '' : 'text-navy'}`}>{s.title}</h2>
                 <p className={`mt-4 max-w-3xl text-[16.5px] leading-relaxed ${i === 0 ? 'text-white/75' : 'text-slate'}`}>{s.text}</p>
               </article>
@@ -54,9 +55,7 @@ export function AboutView({ locale, dict }: { locale: Locale; dict: Dictionary }
                 <div>
                   <dt className="text-[12.5px] text-slate">{d.address}</dt>
                   <dd className="mt-1 text-navy">
-                    {site.address.street}
-                    <br />
-                    {site.address.postalCode} {site.address.city}, {site.address.country}
+                    {site.address.city}, {site.address.country}
                   </dd>
                 </div>
                 <div>
@@ -67,10 +66,18 @@ export function AboutView({ locale, dict }: { locale: Locale; dict: Dictionary }
                     </a>
                   </dd>
                 </div>
+                <div>
+                  <dt className="text-[12.5px] text-slate">{dict.contact.phone}</dt>
+                  <dd className="mt-1 space-y-1">
+                    {site.phones.map((ph) => (
+                      <a key={ph} href={telHref(ph)} className="link-underline block w-fit text-navy tabular-nums" dir="ltr">
+                        {ph}
+                      </a>
+                    ))}
+                  </dd>
+                </div>
               </dl>
-              <a href={asset(`/downloads/snturco-company-profile-${locale}.pdf`)} className="btn-outline mt-8 w-full" download>
-                {dict.footer.profile}
-              </a>
+              <WhatsAppButton dict={dict} className="mt-8 w-full !border-anthracite/15" />
             </div>
           </aside>
         </div>
@@ -94,7 +101,6 @@ export function PartnersView({ locale, dict }: { locale: Locale; dict: Dictionar
                 <article className="flex h-full flex-col overflow-hidden rounded-[22px] bg-white ring-1 ring-line">
                   {/* Logo area: typeset name until a real logo file is supplied (data/partners.ts → logo). */}
                   <div className="relative flex h-52 items-center justify-center overflow-hidden bg-navy">
-                    <div className="pointer-events-none absolute -bottom-20 -end-10 h-56 w-56 rounded-full bg-copper/25 blur-[70px]" aria-hidden="true" />
                     {pt.logo ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={asset(pt.logo)} alt={pt.name} className="relative max-h-24 max-w-[60%] object-contain" />
@@ -103,7 +109,7 @@ export function PartnersView({ locale, dict }: { locale: Locale; dict: Dictionar
                     )}
                   </div>
                   <div className="flex flex-1 flex-col p-8">
-                    <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-copper">{p.labels.partner}</p>
+                    <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-copper-700">{p.labels.partner}</p>
                     <h2 className="display mt-2 text-[28px] text-navy">{pt.name}</h2>
                     <p className="mt-3 text-[15.5px] leading-relaxed text-slate">{tx(pt.description, locale)}</p>
                     <dl className="mt-6 space-y-3 border-t border-line pt-5 text-[15px]">
@@ -149,26 +155,20 @@ export function PartnersView({ locale, dict }: { locale: Locale; dict: Dictionar
 }
 
 /* ---------------------------------------------------------------- Contact */
-function ContactCard({ locale, dict }: { locale: Locale; dict: Dictionary }) {
-  const c = dict.contactPage;
+function ContactCard({ locale, dict, showQuote = true }: { locale: Locale; dict: Dictionary; showQuote?: boolean }) {
   return (
-    <div className="space-y-6">
-      <div className="card-surface p-7">
-        <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-copper">{c.office}</p>
-        <p className="mt-3 font-medium text-navy">{site.legalName}</p>
-        <p className="mt-1 text-[15px] leading-relaxed text-slate">
-          {site.address.street}
-          <br />
-          {site.address.postalCode} {site.address.city}, {site.address.country}
-        </p>
+    <div className="rounded-[22px] bg-anthracite p-7 text-offwhite md:p-8">
+      <p className="font-medium text-offwhite">{site.legalName}</p>
+      <div className="mt-6">
+        <ContactList dict={dict} />
       </div>
-      <div className="card-surface p-7">
-        <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-copper">{c.email}</p>
-        <a href={`mailto:${site.email}`} className="link-underline mt-3 inline-block text-[17px] text-navy" dir="ltr">
-          {site.email}
-        </a>
-      </div>
-      <ArrowLink href={href(locale, 'request-a-quote')}>{dict.cta.quote}</ArrowLink>
+      <WhatsAppButton dict={dict} className="mt-8 w-full" />
+      <p className="mt-5 text-[13.5px] text-offwhite/55">{dict.contact.hours}</p>
+      {showQuote && (
+        <ArrowLink href={href(locale, 'request-a-quote')} tone="dark" className="mt-6">
+          {dict.cta.quote}
+        </ArrowLink>
+      )}
     </div>
   );
 }
@@ -230,7 +230,7 @@ export function QuoteView({ locale, dict }: { locale: Locale; dict: Dictionary }
                 ))}
               </ol>
             </div>
-            <ContactCard locale={locale} dict={dict} />
+            <ContactCard locale={locale} dict={dict} showQuote={false} />
           </aside>
         </div>
       </section>
