@@ -1,0 +1,4 @@
+{
+  "_note": "Shipment records for the container counter. Only change this file with `npm run shipment:add` / `npm run shipment:status` (see SHIPMENTS.md). This repository is public: use internal references, never customer names, supplier names or customer PO numbers.",
+  "shipments": []
+}

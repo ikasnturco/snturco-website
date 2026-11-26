@@ -19,8 +19,9 @@ export const site = {
   phone: '',
   /** WhatsApp number, digits only with country code, e.g. '351900000000'. Empty = WhatsApp button hidden. */
   whatsapp: '',
-  /** LinkedIn company page URL. Empty = hidden. */
+  /** Social media links (full URLs). Empty = hidden in the footer. */
   linkedin: '',
+  instagram: '',
   /** Public form endpoint (see .env.example). Empty = email fallback. */
   formEndpoint: process.env.NEXT_PUBLIC_FORM_ENDPOINT || '',
   formAccessKey: process.env.NEXT_PUBLIC_FORM_ACCESS_KEY || '',

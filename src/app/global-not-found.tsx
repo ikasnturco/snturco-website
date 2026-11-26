@@ -3,7 +3,8 @@ import '@fontsource/playfair-display/500.css';
 import './globals.css';
 import type { Metadata } from 'next';
 import { LogoMark } from '@/components/Logo';
-import { getDictionary, locales, localeMeta } from '@/i18n';
+import { locales, localeMeta } from '@/i18n/config';
+import { getDictionary } from '@/locales';
 import { site } from '@/config/site';
 
 export const metadata: Metadata = { title: 'Page not found | SNTURCO', robots: { index: false } };
