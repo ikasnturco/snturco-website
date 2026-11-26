@@ -71,7 +71,7 @@ function ViewerDialog({ slug, kind, name, labels, onClose }: { slug: string; kin
         const { env } = studioEnvironment(renderer);
         const v = createViewer({ look, seed: slug.length * 31 + 7, aspect: box.clientWidth / box.clientHeight, mobile });
         v.scene.environment = env;
-        v.scene.environmentIntensity = 0.5;
+        v.scene.environmentIntensity = 0.35;
         const controls = new OrbitControls(v.camera, canvas);
         controls.enableDamping = true;
         controls.dampingFactor = 0.08;

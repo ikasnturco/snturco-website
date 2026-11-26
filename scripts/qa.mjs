@@ -68,7 +68,7 @@ async function shoot(page, name, full = false) {
       await page.waitForTimeout(2500);
       await shoot(page, `d-05-yard-${Math.round(f * 100)}`);
     }
-    ok('Container yard shows demo label with no records', (await yard.innerText()).toLowerCase().includes('demo'));
+    ok('Container yard has no demo label', !(await yard.innerText()).toLowerCase().includes('demo'));
   } else ok('Container yard present', false);
 
   for (const [p, n] of [['/en/products/', 'd-06-products'], ['/en/products/cotton/', 'd-07-product-cotton'], ['/tr/cotton/', 'd-08-cotton-tr'], ['/en/knowledge/', 'd-09-knowledge'], ['/en/partners/', 'd-10-partners'], ['/tr/about/', 'd-11-about-tr'], ['/ar/', 'd-12-home-ar']]) {
@@ -108,7 +108,78 @@ async function shoot(page, name, full = false) {
   await page.goto(base + '/tr/contact/', { waitUntil: 'networkidle' });
   ok('Contact form has Subject field', (await page.locator('#contact-subject').count()) === 1);
   ok('No success message shown before sending', (await page.locator('text=has been sent').count()) === 0);
+  // form without an access key: clear message, never a fake success, never a mailto hand-off
+  await page.goto(base + '/en/contact/', { waitUntil: 'networkidle' });
+  for (const [id, v] of [['firstName', 'Test'], ['lastName', 'Buyer'], ['country', 'Portugal'], ['email', 'test@example.com'], ['subject', 'QA'], ['message', 'QA message']]) await page.fill(`#contact-${id}`, v);
+  await page.check('input[name=consent]');
+  await page.waitForTimeout(2600);
+  const before = page.url();
+  await page.click('button[type=submit]');
+  await page.waitForTimeout(800);
+  const status = await page.locator('[data-form-status]').first().getAttribute('data-form-status').catch(() => null);
+  ok('Form never fakes success or opens mailto', page.url() === before && status !== 'sent' && status !== null, `status=${status}`);
+  await shoot(page, 'd-15-contact-form-status', true);
+
+  // phones and WhatsApp
+  const tels = await page.$$eval('a[data-tel]', (as) => [...new Set(as.map((a) => a.getAttribute('href')))]);
+  ok('Both phone numbers are tel: links', tels.includes('tel:+491625641453') && tels.includes('tel:+905357014603'), tels.join(','));
+  const wa = await page.$$eval('a[data-whatsapp]', (as) => as.map((a) => a.getAttribute('href')));
+  ok('WhatsApp links use +49 162 564 1453 with a message', wa.length > 0 && wa.every((h) => h.startsWith('https://wa.me/491625641453?text=')), wa[0] || '');
+  ok('WhatsApp button text', (await page.locator('a[data-whatsapp]').first().innerText()).toUpperCase().includes('CONTACT US ON WHATSAPP'));
+  const bodyText = await page.locator('body').innerText();
+  ok('Address shows Porto, Portugal only', bodyText.includes('Porto, Portugal') && !bodyText.includes('4100') && !/Rua |Avenida /.test(bodyText));
+
+  // product page: per-product WhatsApp + 3D viewer
+  await page.goto(base + '/en/products/wool/', { waitUntil: 'networkidle' });
+  const waProduct = await page.locator('a[data-whatsapp]').first().getAttribute('href');
+  ok('Product WhatsApp message names the yarn', decodeURIComponent(waProduct).includes('Wool'));
+  await page.click('[data-viewer-open]');
+  await page.waitForSelector('[data-viewer] canvas');
+  await page.waitForFunction(() => !document.querySelector('[data-viewer] [aria-live]'), null, { timeout: 30000 }).catch(() => {});
+  const viewerReady = await page.evaluate(() => !document.querySelector('[data-viewer] [aria-live]'));
+  const box = await page.locator('[data-viewer] canvas').boundingBox();
+  if (box) {
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 + 200, box.y + box.height / 2 + 40, { steps: 8 });
+    await page.mouse.up();
+    await page.mouse.wheel(0, -400);
+    await page.waitForTimeout(1200);
+  }
+  ok('3D viewer loads and responds', viewerReady);
+  await shoot(page, 'd-16-viewer');
+  await page.keyboard.press('Escape');
+
+  // all 7 languages: complete content, correct lang/dir
+  for (const l of ['en', 'tr', 'de', 'pt', 'it', 'ru', 'ar']) {
+    let fallback = 0;
+    for (const p of ['', 'products/silk/', 'cotton/giza-cotton/', 'knowledge/', 'partners/', 'contact/']) {
+      await page.goto(`${base}/${l}/${p}`, { waitUntil: 'domcontentloaded' });
+      fallback += await page.locator('[data-fallback]').count();
+    }
+    const dir = await page.getAttribute('html', 'dir');
+    const lang = await page.getAttribute('html', 'lang');
+    ok(`Language ${l}: complete, lang/dir set`, fallback === 0 && lang?.startsWith(l) && (l === 'ar' ? dir === 'rtl' : dir !== 'rtl'), `fallback=${fallback} lang=${lang} dir=${dir}`);
+  }
+  for (const l of ['de', 'ru', 'ar']) {
+    await page.goto(`${base}/${l}/products/silk/`, { waitUntil: 'networkidle' });
+    await shoot(page, `d-17-product-${l}`);
+  }
   ok('No console errors (desktop)', errors.length === 0, errors.slice(0, 3).join(' | '));
+  await ctx.close();
+}
+
+// Tablet
+{
+  const ctx = await browser.newContext({ ...devices['iPad (gen 7)'] });
+  const page = await ctx.newPage();
+  for (const [p, n] of [['/de/', 't-01-home-de'], ['/pt/products/', 't-02-products-pt'], ['/it/contact/', 't-03-contact-it']]) {
+    await page.goto(base + p, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(1500);
+    await shoot(page, n);
+    const w = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    ok(`No horizontal scroll on tablet ${p}`, w <= 0, `${w}px`);
+  }
   await ctx.close();
 }
 
@@ -139,6 +210,10 @@ async function shoot(page, name, full = false) {
   await shoot(page, 'm-04-product');
   await page.goto(base + '/tr/request-a-quote/', { waitUntil: 'networkidle' });
   await shoot(page, 'm-05-quote');
+  await page.goto(base + '/ar/contact/', { waitUntil: 'networkidle' });
+  await shoot(page, 'm-06-contact-ar', true);
+  const scrollAr = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  ok('No horizontal scroll on mobile (Arabic contact)', scrollAr <= 0, `${scrollAr}px`);
   ok('No page errors (mobile)', errors.length === 0, errors.slice(0, 3).join(' | '));
   await ctx.close();
 }

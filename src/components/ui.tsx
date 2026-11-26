@@ -111,7 +111,7 @@ export function CtaBand({ locale, dict }: { locale: Locale; dict: Dictionary }) 
 export function FallbackNote({ show, text }: { show: boolean; text: string }) {
   if (!show) return null;
   return (
-    <p className="mb-8 inline-flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2 text-[13px] text-slate">
+    <p className="mb-8 inline-flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2 text-[13px] text-slate" data-fallback>
       <span aria-hidden="true">EN</span>
       {text}
     </p>
