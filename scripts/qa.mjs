@@ -113,12 +113,25 @@ async function shoot(page, name, full = false) {
   for (const [id, v] of [['firstName', 'Test'], ['lastName', 'Buyer'], ['country', 'Portugal'], ['email', 'test@example.com'], ['subject', 'QA'], ['message', 'QA message']]) await page.fill(`#contact-${id}`, v);
   await page.check('input[name=consent]');
   await page.waitForTimeout(2600);
+  // Web3Forms is mocked here so QA never sends a real email: first a refusal, then a confirmed delivery.
+  const posts = [];
+  let reply = { success: false, message: 'refused' };
+  await page.route('https://api.web3forms.com/**', async (route) => {
+    posts.push(route.request().postDataJSON());
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(reply) });
+  });
   const before = page.url();
   await page.click('button[type=submit]');
   await page.waitForTimeout(800);
   const status = await page.locator('[data-form-status]').first().getAttribute('data-form-status').catch(() => null);
-  ok('Form never fakes success or opens mailto', page.url() === before && status !== 'sent' && status !== null, `status=${status}`);
+  ok('Form never fakes success or opens mailto', page.url() === before && status === 'error', `status=${status}`);
   await shoot(page, 'd-15-contact-form-status', true);
+  reply = { success: true, message: 'ok' };
+  await page.click('button[type=submit]');
+  await page.waitForTimeout(800);
+  const status2 = await page.locator('[data-form-status]').first().getAttribute('data-form-status').catch(() => null);
+  ok('Form shows success only after Web3Forms confirms', status2 === 'sent' && posts.length === 2 && Boolean(posts[1]?.access_key), `status=${status2} posts=${posts.length}`);
+  await page.unroute('https://api.web3forms.com/**');
 
   // phones and WhatsApp
   const tels = await page.$$eval('a[data-tel]', (as) => [...new Set(as.map((a) => a.getAttribute('href')))]);
