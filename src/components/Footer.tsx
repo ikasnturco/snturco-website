@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Logo } from './Logo';
-import { site, asset } from '@/config/site';
+import { site } from '@/config/site';
+import { ContactList, WhatsAppButton } from './ContactLinks';
 import { href, tx, type Locale } from '@/i18n/config';
 import type { Dictionary } from '@/locales';
 import { products } from '@/data/products';
@@ -11,18 +12,17 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const f = dict.footer;
   const year = new Date().getFullYear();
   const link = 'text-[14px] text-white/60 transition hover:text-white';
-  const head = 'text-[11px] font-semibold uppercase tracking-[0.22em] text-copper-300';
+  const head = 'text-[11px] font-semibold uppercase tracking-[0.22em] text-champagne';
   const social = [{ label: 'LinkedIn', url: site.linkedin }, { label: 'Instagram', url: site.instagram }].filter((s) => s.url);
-  const profileLang = ['en', 'de', 'tr', 'pt', 'it', 'ru', 'ar'].includes(locale) ? locale : 'en';
 
   return (
     <footer className="relative overflow-hidden bg-ink text-white print:hidden">
-      <div className="pointer-events-none absolute -top-40 end-[-10%] h-[480px] w-[480px] rounded-full bg-copper/10 blur-[120px]" aria-hidden="true" />
       <div className="container relative grid gap-12 pb-14 pt-20 md:grid-cols-2 lg:grid-cols-12">
-        <div className="lg:col-span-4">
+        <div className="lg:col-span-3">
           <Logo inverted />
           <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-white/60">{f.tagline}</p>
           <p className="mt-6 font-display text-[22px] italic text-white/85">{dict.meta.tagline}</p>
+          <WhatsAppButton dict={dict} className="mt-7 whitespace-nowrap !px-5 !py-3 text-[13px]" />
           {social.length > 0 && (
             <div className="mt-6">
               <p className={head}>{f.social}</p>
@@ -93,25 +93,11 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             </li>
           </ul>
         </div>
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-3">
           <p className={head}>{f.contact}</p>
-          <address className="mt-5 text-[14px] not-italic leading-relaxed text-white/60" dir="ltr">
-            {site.legalName}
-            <br />
-            {site.address.street}
-            <br />
-            {site.address.postalCode} {site.address.city}, {site.address.country}
-          </address>
-          <p className="mt-4">
-            <a href={`mailto:${site.email}`} className="text-[14px] text-white link-underline" dir="ltr">
-              {site.email}
-            </a>
-          </p>
-          <p className="mt-4">
-            <a href={asset(`/downloads/snturco-company-profile-${profileLang}.pdf`)} className={link} download>
-              {f.profile}
-            </a>
-          </p>
+          <div className="mt-5">
+            <ContactList dict={dict} />
+          </div>
         </div>
       </div>
       <div className="border-t border-white/10">

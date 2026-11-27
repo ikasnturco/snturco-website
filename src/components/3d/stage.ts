@@ -2,12 +2,13 @@ import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
 export const brand = {
-  navy900: '#0b1524',
-  navy: '#14243b',
-  navy700: '#1d3352',
-  copper: '#a86b45',
-  copperLight: '#d0a385',
-  sand: '#f5f1ea',
+  // Dark Luxury palette (names kept for the scene code)
+  navy900: '#18191b',
+  navy: '#202124',
+  navy700: '#2a2b2e',
+  copper: '#c6a98e',
+  copperLight: '#c6a98e',
+  sand: '#f1eee9',
 };
 
 /** Radial vignette background drawn on a canvas, used as scene.background. */
@@ -69,11 +70,11 @@ export function studioEnvironment(renderer: THREE.WebGLRenderer, intensity = 1) 
 export function lightRig(scene: THREE.Scene, opts: { key?: number; rim?: number; fill?: number; warm?: boolean } = {}) {
   const key = new THREE.DirectionalLight(opts.warm === false ? 0xffffff : 0xfff8f0, opts.key ?? 2.6);
   key.position.set(4, 6, 5);
-  const fill = new THREE.DirectionalLight(0x9fb6d6, opts.fill ?? 0.6);
+  const fill = new THREE.DirectionalLight(0xc9ccd1, opts.fill ?? 0.6);
   fill.position.set(-6, -2, 3);
   const rim = new THREE.DirectionalLight(0xf2d6c2, (opts.rim ?? 2.2) * 0.7);
   rim.position.set(-3, 4, -6);
-  const amb = new THREE.HemisphereLight(0xf6f4f0, 0x22324a, 0.9);
+  const amb = new THREE.HemisphereLight(0xf6f4f0, 0x2a2b2e, 0.9);
   scene.add(key, fill, rim, amb);
   return { key, fill, rim, amb };
 }

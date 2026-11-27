@@ -125,3 +125,8 @@ export const iconByKey = {
 } as const;
 
 export const serviceIcons = [IconSearch, IconHandshake, IconSample, IconTruck, IconChain, IconChart];
+export const IconPhone = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M7 5h5l2 6-3 2a15 15 0 0 0 8 8l2-3 6 2v5a2 2 0 0 1-2 2A21 21 0 0 1 5 7a2 2 0 0 1 2-2Z" />
+  </svg>
+);

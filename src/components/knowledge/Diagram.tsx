@@ -2,7 +2,7 @@ import { tx, type L, type Locale } from '@/i18n/config';
 import type { Topic } from '@/data/knowledge';
 
 /** Simple, accurate line diagrams for the Textile Knowledge topics. Pure SVG, no images. */
-const C = { navy: '#14243b', copper: '#a86b45', light: '#d0a385', sand: '#ebe4d8', slate: '#5c6470', ecru: '#efe6d4' };
+const C = { navy: '#202124', copper: '#7A604B', light: '#C6A98E', sand: '#E7E3DD', slate: '#5E6369', ecru: '#F1EEE9' };
 
 const t: Record<string, L> = {
   natural: { en: 'Natural', tr: 'Doğal' },

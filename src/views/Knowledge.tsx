@@ -15,7 +15,7 @@ export function KnowledgeView({ locale, dict }: { locale: Locale; dict: Dictiona
         <div className="container grid gap-12 lg:grid-cols-12">
           <nav aria-label={kp.toc} className="lg:col-span-3">
             <div className="lg:sticky lg:top-28">
-              <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-copper">{kp.toc}</p>
+              <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-copper-700">{kp.toc}</p>
               <ol className="mt-4 space-y-1 border-s border-line">
                 {topics.map((tp, i) => (
                   <li key={tp.slug}>
@@ -34,7 +34,7 @@ export function KnowledgeView({ locale, dict }: { locale: Locale; dict: Dictiona
               <article key={tp.slug} id={tp.slug} className="reveal scroll-mt-28 overflow-hidden rounded-[22px] bg-white ring-1 ring-line">
                 <div className="grid md:grid-cols-2">
                   <div className="p-7 md:p-10">
-                    <p className="text-[12px] tabular-nums tracking-[0.25em] text-copper">{String(i + 1).padStart(2, '0')}</p>
+                    <p className="text-[12px] tabular-nums tracking-[0.25em] text-copper-700">{String(i + 1).padStart(2, '0')}</p>
                     <h2 className="display mt-3 text-[clamp(1.6rem,2.6vw,2.2rem)] text-navy">{tx(tp.title, locale)}</h2>
                     <p className="mt-4 text-[15.5px] leading-relaxed text-charcoal">{tx(tp.text, locale)}</p>
                   </div>
@@ -53,7 +53,7 @@ export function KnowledgeView({ locale, dict }: { locale: Locale; dict: Dictiona
                       .map((s) => productBySlug[s])
                       .filter(Boolean)
                       .map((p) => (
-                        <Link key={p.slug} href={href(locale, `products/${p.slug}`)} className="rounded-full border border-navy/15 px-3.5 py-1.5 text-[13px] text-navy transition hover:border-copper hover:text-copper">
+                        <Link key={p.slug} href={href(locale, `products/${p.slug}`)} className="rounded-full border border-navy/15 px-3.5 py-1.5 text-[13px] text-navy transition hover:border-copper hover:text-copper-700">
                           {tx(p.name, locale)} →
                         </Link>
                       ))}

@@ -3,6 +3,7 @@
  * Protected names (Supima®, Egyptian cotton marks) and organic claims are described, not claimed:
  * certified or licensed yarn is offered only with valid documents from the supply chain.
  */
+import { applyTranslations } from './i18n';
 import type { L, LL } from '@/i18n/config';
 
 export type Cotton = {
@@ -19,7 +20,7 @@ export type Cotton = {
   note?: L;
 };
 
-export const cottons: Cotton[] = [
+export const cottons: Cotton[] = applyTranslations<Cotton>([
   {
     slug: 'american-cotton',
     name: { en: 'American Cotton', tr: 'Amerikan Pamuğu' },
@@ -165,7 +166,7 @@ export const cottons: Cotton[] = [
     uses: { en: ['Luxury shirting', 'Fine knitwear'], tr: ['Lüks gömleklik', 'İnce triko'] },
     difference: { en: 'The rarest cotton in this list. Availability and price are confirmed per request.', tr: 'Bu listedeki en nadir pamuk. Bulunabilirlik ve fiyat talebe göre teyit edilir.' },
   },
-];
+], 'cotton');
 
 export const cottonBySlug = Object.fromEntries(cottons.map((c) => [c.slug, c])) as Record<string, Cotton>;
 

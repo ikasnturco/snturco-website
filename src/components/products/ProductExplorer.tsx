@@ -184,7 +184,7 @@ export function ProductExplorer({ items, labels }: { items: ExplorerItem[]; labe
                       <th key={it.slug} scope="col" className="px-3 pb-4 text-start align-bottom">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={asset(it.image)} alt="" className="mb-3 aspect-[4/3] w-full rounded-xl object-cover" />
-                        <Link href={it.to} className="display text-2xl text-navy hover:text-copper">
+                        <Link href={it.to} className="display text-2xl text-navy hover:text-copper-700">
                           {it.name}
                         </Link>
                       </th>

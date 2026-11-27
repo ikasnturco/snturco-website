@@ -30,7 +30,7 @@ export function heroStrands(mobile: boolean): Strand[] {
     [17, 5.2, -2.5],
   ]);
   const q = mobile ? 0.6 : 1;
-  const copper: FibreLook = { ...looks.cotton, color: '#9c5a34', hair: 0.55 };
+  const copper: FibreLook = { ...looks.cotton, color: '#c6a98e', hair: 0.55 };
   const ecru: FibreLook = { ...looks.cotton, color: '#efe6d4' };
   const strands: Strand[] = [
     { curve: pairCurve(base, 0.62, 4.5, 0), radius: 0.5, look: copper, fibres: Math.round(110 * q), seed: 1, amp: 0.18, speed: 0.35 },
@@ -58,7 +58,7 @@ export function heroStrands(mobile: boolean): Strand[] {
         [15, -1.6, 1.4],
       ]),
       radius: 0.2,
-      look: { ...looks.silk, color: '#5d7192' },
+      look: { ...looks.silk, color: '#b8aaa0' },
       fibres: Math.round(60 * q),
       seed: 4,
       amp: 0.12,
@@ -104,7 +104,7 @@ function waveMaterial(mat: THREE.MeshPhysicalMaterial, amp: number, speed: numbe
 
 export function createHero({ aspect, mobile = false }: { aspect: number; mobile?: boolean }) {
   const scene = new THREE.Scene();
-  scene.background = gradientTexture('#17293f', brand.navy900, { color: brand.copper, x: 0.78, y: 0.3, r: 0.55, a: 0.2 }, 1600, 1000);
+  scene.background = gradientTexture('#2b2c30', brand.navy900, { color: brand.copper, x: 0.78, y: 0.3, r: 0.55, a: 0.2 }, 1600, 1000);
   scene.fog = new THREE.Fog(brand.navy900, 12, 30);
   lightRig(scene, { key: 2.6, rim: 3, fill: 0.7 });
   const camera = new THREE.PerspectiveCamera(aspect < 1 ? 52 : 34, aspect, 0.1, 100);

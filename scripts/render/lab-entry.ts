@@ -13,6 +13,9 @@ const renderer = createRenderer(canvas, { preserve: true, antialias: true });
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+let env: THREE.Texture | null = null;
+const studioEnv = () => (env ??= studioEnvironment(renderer).env);
+
 function encode(w: number, h: number, quality: number, type = 'image/webp') {
   const out = document.createElement('canvas');
   out.width = w;
@@ -35,6 +38,10 @@ function setSize(w: number, h: number, ss: number) {
   const ss = o.ss ?? 2;
   setSize(o.w, o.h, ss);
   const { scene, camera } = shots[o.kind]({ look, seed: o.seed, aspect: o.w / o.h, tint: o.tint, background: o.background, angle: o.angle, quality: o.quality });
+  // Same studio light for every yarn (also used by the interactive viewer), so whites read as white
+  // and lustre differences come from the fibre, not from the lighting.
+  scene.environment = studioEnv();
+  scene.environmentIntensity = 0.35;
   renderer.render(scene, camera);
   const url = encode(o.w, o.h, o.q ?? 0.86);
   scene.traverse((x: any) => { x.geometry?.dispose?.(); x.material?.dispose?.(); });

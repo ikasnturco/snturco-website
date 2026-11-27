@@ -113,10 +113,10 @@ export function ContainerYard({ dict, data }: { dict: Dictionary; data: PublicSh
   ];
 
   return (
-    <section data-yard ref={wrapRef} id="shipments" aria-labelledby="shipments-title" className={`relative bg-ink text-white ${mode === 'live' || mode === 'loading' ? 'h-[420vh]' : ''}`}>
+    <section data-yard ref={wrapRef} id="shipments" aria-labelledby="shipments-title" className={`relative bg-ink text-white ${mode === 'live' || mode === 'loading' ? 'h-[260vh]' : ''}`}>
       <div className={`${mode === 'live' || mode === 'loading' ? 'sticky top-0 h-[100svh]' : 'relative h-[80svh] min-h-[560px]'} overflow-hidden`}>
         <canvas ref={canvasRef} aria-hidden="true" className={`absolute inset-0 h-full w-full transition-opacity duration-1000 ${mode === 'live' || mode === 'static' ? 'opacity-100' : 'opacity-0'}`} />
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(11,21,36,0.85)_0%,rgba(11,21,36,0)_30%,rgba(11,21,36,0)_60%,rgba(11,21,36,0.9)_100%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(24,25,27,0.85)_0%,rgba(24,25,27,0)_30%,rgba(24,25,27,0)_60%,rgba(24,25,27,0.9)_100%)]" />
 
         <div className={`absolute inset-x-0 top-0 pt-28 transition-all duration-700 md:pt-32 ${intro || progress > 0.86 ? 'opacity-100' : 'opacity-0'}`}>
           <div className="container">
@@ -127,20 +127,6 @@ export function ContainerYard({ dict, data }: { dict: Dictionary; data: PublicSh
             <p className="mt-4 max-w-lg text-[16px] leading-relaxed text-white/70">{t.text}</p>
           </div>
         </div>
-
-        {data.demo && (
-          <div className="absolute inset-x-0 bottom-0 pb-10 md:pb-14">
-            <div className="container">
-              <div className="max-w-md rounded-2xl border border-copper-300/30 bg-ink/70 p-5 backdrop-blur-md" role="note">
-                <p className="inline-flex items-center gap-2 rounded-full bg-copper/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-copper-200">
-                  <span className="h-1.5 w-1.5 rounded-full bg-copper-300" aria-hidden="true" />
-                  {t.demoBadge}
-                </p>
-                <p className="mt-3 text-[14px] leading-relaxed text-white/75">{t.demoText}</p>
-              </div>
-            </div>
-          </div>
-        )}
 
         {!data.demo && (
           <div className={`absolute inset-x-0 bottom-0 pb-12 transition-all duration-700 md:pb-16 ${showCounters ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}>

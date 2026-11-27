@@ -92,37 +92,41 @@ export function Hero({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative isolate h-[100svh] min-h-[620px] overflow-hidden bg-ink text-white">
+    <section ref={sectionRef} className="relative isolate h-[88svh] min-h-[600px] overflow-hidden bg-ink text-white">
       <picture>
         <source media="(max-width: 767px)" srcSet={asset('/images/hero/poster-mobile.webp')} />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={asset('/images/hero/poster.webp')} alt="" aria-hidden="true" fetchPriority="high" className="absolute inset-0 -z-20 h-full w-full object-cover" />
       </picture>
       <canvas ref={canvasRef} aria-hidden="true" className={`absolute inset-0 -z-10 h-full w-full transition-opacity duration-[1600ms] ${live ? 'opacity-100' : 'opacity-0'}`} />
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(11,21,36,0.88)_0%,rgba(11,21,36,0.55)_38%,rgba(11,21,36,0)_70%)] max-md:bg-[linear-gradient(0deg,rgba(11,21,36,0.95)_10%,rgba(11,21,36,0.5)_45%,rgba(11,21,36,0)_70%)] rtl:md:bg-[linear-gradient(270deg,rgba(11,21,36,0.88)_0%,rgba(11,21,36,0.55)_38%,rgba(11,21,36,0)_70%)]" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(24,25,27,0.88)_0%,rgba(24,25,27,0.55)_38%,rgba(24,25,27,0)_70%)] max-md:bg-[linear-gradient(0deg,rgba(24,25,27,0.95)_10%,rgba(24,25,27,0.5)_45%,rgba(24,25,27,0)_70%)] rtl:md:bg-[linear-gradient(270deg,rgba(24,25,27,0.88)_0%,rgba(24,25,27,0.55)_38%,rgba(24,25,27,0)_70%)]" />
       <div className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-t from-ink to-transparent" />
 
-      <div className="container flex h-full flex-col justify-end pb-24 md:justify-center md:pb-0">
+      <div className="container flex h-full flex-col justify-end pb-20 md:justify-center md:pb-16">
         <div className="max-w-3xl">
           <p className="eyebrow animate-rise text-copper-300 [animation-delay:200ms]">{h.eyebrow}</p>
-          <h1 className="display mt-6 animate-rise text-[clamp(3rem,8vw,7rem)] [animation-delay:320ms]">{h.title}</h1>
+          <h1 className="display mt-6 animate-rise text-[clamp(2.8rem,6.4vw,6rem)] [animation-delay:320ms]">{h.title}</h1>
           <p className="mt-7 max-w-xl animate-rise text-[clamp(1.05rem,1.6vw,1.3rem)] leading-relaxed text-white/75 [animation-delay:460ms]">{h.lead}</p>
           <div className="mt-10 flex animate-rise flex-wrap gap-3 [animation-delay:600ms]">
             <Link href={href(locale, 'products')} className="btn-copper">
               {dict.cta.explore}
             </Link>
-            <Link href={href(locale, 'about')} className="btn-ghost-light">
-              {dict.cta.discover}
+            <Link href={href(locale, 'request-a-quote')} className="btn-ghost-light">
+              {dict.cta.quote}
             </Link>
           </div>
         </div>
       </div>
 
-      <div className="pointer-events-none absolute bottom-8 start-1/2 hidden -translate-x-1/2 flex-col items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-white/50 md:flex rtl:translate-x-1/2" aria-hidden="true">
-        {dict.common.scroll}
-        <span className="relative h-12 w-px overflow-hidden bg-white/15">
-          <span className="absolute inset-0 animate-line bg-copper-300" />
-        </span>
+      <div className="absolute inset-x-0 bottom-0 hidden border-t border-white/10 bg-ink/40 backdrop-blur-sm md:block">
+        <ul className="container grid grid-cols-3 divide-x divide-white/10 rtl:divide-x-reverse">
+          {h.facts.map((f, i) => (
+            <li key={f} className="flex items-center gap-4 py-5 ps-0 text-[13.5px] text-white/70 [&:not(:first-child)]:ps-6">
+              <span className="text-[11px] tabular-nums tracking-[0.25em] text-champagne">0{i + 1}</span>
+              {f}
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

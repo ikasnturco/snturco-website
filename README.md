@@ -14,15 +14,17 @@ npm ci
 npm run dev          # http://localhost:3000/en/
 npm run build        # static site in ./out (runs the shipment data check first)
 npm run check        # crawls ./out: broken links and console errors
-npm run typecheck
+npm run typecheck    # TypeScript + check that all 7 languages are complete
+npm run qa           # browser QA with screenshots (needs ./out)
 ```
 
 ## Where things live
 
 | What | File |
 | --- | --- |
-| Email, address, social links | `src/config/site.ts` (empty values are hidden; no phone is shown) |
-| Interface texts | `src/locales/en.ts`, `tr.ts` (complete); `de/pt/it/ru/ar.ts` (partial, English fallback) |
+| Email, location, phones, WhatsApp, social links | `src/config/site.ts` (location is city only: Porto, Portugal) |
+| Interface texts | `src/locales/<locale>.ts`, all 7 complete (each is type-checked against `en.ts`) |
+| Product / cotton / knowledge texts in DE, PT, IT, RU, AR | `src/data/i18n/<locale>.ts` (`npm run i18n:check` lists anything missing) |
 | Yarns (14) | `src/data/products.ts` |
 | Cotton collection (9) | `src/data/cotton.ts` |
 | Textile knowledge (12 topics) | `src/data/knowledge.ts`, diagrams in `src/components/knowledge/Diagram.tsx` |
@@ -34,7 +36,8 @@ npm run typecheck
 
 ## 2. Add a product
 
-1. Add an entry to `src/data/products.ts` (copy an existing one; every text has `en` and `tr`).
+1. Add an entry to `src/data/products.ts` (copy an existing one; every text has `en` and `tr`),
+   and the same slug in each `src/data/i18n/<locale>.ts` for DE, PT, IT, RU and AR.
    Fields: slug, name, category (`natural` / `synthetic` / `regenerated`), tagline, intro, source, structure,
    classification, properties, texture, advantages, uses, products, care, related, compare levels (1–5).
 2. Images go in `public/images/yarns/<slug>/`: `macro.webp`, `cone.webp`, `fibres.webp` (1600×1200) and
@@ -54,7 +57,8 @@ Use only real, approved information.
 
 See **`SHIPMENTS.md`**. In short: `npm run shipment:add -- --order <ref> --containers 2 --date 2026-12-10`.
 The counters and the 3D container yard update on the next deploy. Nothing else changes the numbers.
-While there are no records, the home page shows a clearly labelled demo scene and no numbers.
+While there are no records, the home page shows the container scene without any numbers.
+Only one container in the scene carries the SNTURCO logo; the others are plain.
 
 ## 6. Adding an admin panel later
 
@@ -70,7 +74,12 @@ The site reads everything from typed data files, so a CMS can replace them witho
 ## 3D images and animation
 
 All yarn images, the hero poster and the scroll story frames are **original procedural 3D renders**
-(`scripts/render/`): a fibre-level yarn model rendered offline in headless Chromium.
+(`scripts/render/`): a fibre-level yarn model rendered offline in headless Chromium. Every yarn is shown in its
+natural raw colour under the same studio light; differences come from structure, thickness, hairiness and
+lustre (`src/components/3d/looks.ts`). Real photographs can replace any render with the same file name.
+
+Product and cotton pages also have an **interactive 3D viewer** (rotate, zoom, reset) built from the same model.
+It loads only when the visitor opens it.
 
 ```bash
 npm run render -- products [filter]   # 14 yarns × 3 images
@@ -82,19 +91,20 @@ npm run render -- hero
 The hero and the container yard also run live in WebGL; without WebGL or with reduced motion the site shows
 still images instead.
 
-## Forms
+## Forms, phone and WhatsApp
 
-Static hosting has no server, so forms work in one of two ways:
-
-1. **Default (no setup):** the form validates the input, then opens the visitor's email program with the message
-   addressed to the company email. The page says clearly that the message is sent only when they press send there.
-2. **Direct sending (free):** create a free form endpoint, for example at Web3Forms (access key sent to your email,
-   free tier) or Formspree (free tier). Then add these GitHub repository variables
-   (Settings → Secrets and variables → Actions → Variables) and re-run the deploy:
-   - `FORM_ENDPOINT`: e.g. `https://api.web3forms.com/submit`
-   - `FORM_ACCESS_KEY`: the Web3Forms access key (public by design, it can only send to your inbox)
-
-   The form only shows "sent" when the service confirms it.
+- **Email:** the quote and contact forms send real email to `ikasourcing@snturco.com` through
+  [Web3Forms](https://web3forms.com) (free plan: 250 messages a month). Web3Forms validates and filters spam on
+  its server and sends from its own mail servers, so no DNS (SPF/DKIM/DMARC) changes are needed for snturco.com.
+  Set the access key once as a GitHub repository variable `FORM_ACCESS_KEY` (Settings → Secrets and variables →
+  Actions → Variables) and re-run the deploy. The key is public by design: it can only deliver to that inbox.
+  - Success is shown only when Web3Forms confirms delivery; errors show a clear message and the email address.
+  - Without a key, the form says it is temporarily unavailable. It never opens the visitor's email program.
+  - Spam: hidden honeypot (`botcheck`) and a minimum fill time. Duplicates: the button locks while sending and the
+    same message cannot be sent twice in one session.
+- **Phones:** `site.phones` in `src/config/site.ts`, shown as `tel:` links.
+- **WhatsApp:** `site.whatsapp` (digits only). Buttons open `wa.me` with a pre-filled message in the visitor's
+  language; product pages name the yarn. Works in the WhatsApp app and in WhatsApp Web / Desktop.
 
 ## Deployment (GitHub Pages)
 

@@ -13,7 +13,9 @@ export type YardContainer = { size: '20ft' | '40ft' | '40ft HC'; isNew?: boolean
 
 const W = 2.44;
 const dims = { '20ft': { L: 6.06, H: 2.59 }, '40ft': { L: 12.19, H: 2.59 }, '40ft HC': { L: 12.19, H: 2.9 } } as const;
-const PAINTS = ['#1d3352', '#a86b45', '#e9e2d6', '#14243b', '#8f5a39', '#2a4468'];
+// Realistic, unbranded industrial paints. Only the first container (index 0) is SNTURCO-branded (anthracite).
+const BRAND_PAINT = '#2a2b2e';
+const PAINTS = ['#6b2e25', '#5f6468', '#2f3b33', '#8a7b68', '#3b434c', '#7a3a22', '#a49a8c'];
 
 /** Corrugated panel: profile repeats along `len`, extruded over `height`. Facing +z. */
 function corrugated(len: number, height: number, pitch = 0.278, depth = 0.036) {
@@ -145,13 +147,13 @@ function logoTexture(light: boolean) {
   c.height = 256;
   const g = c.getContext('2d')!;
   g.clearRect(0, 0, 1024, 256);
-  const col = light ? '#14243b' : '#f5f1ea';
+  const col = light ? '#202124' : '#f1eee9';
   g.fillStyle = col;
   g.font = '600 120px "Inter Variable", "Helvetica Neue", Arial, sans-serif';
   g.textBaseline = 'middle';
   (g as CanvasRenderingContext2D & { letterSpacing?: string }).letterSpacing = '34px';
   g.fillText('SNTURCO', 60, 130);
-  g.fillStyle = '#c08560';
+  g.fillStyle = '#c6a98e';
   g.fillRect(64, 205, 300, 6);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
@@ -165,7 +167,7 @@ function concreteTexture() {
   c.width = s;
   c.height = s;
   const g = c.getContext('2d')!;
-  g.fillStyle = '#454c57';
+  g.fillStyle = '#4a4b4e';
   g.fillRect(0, 0, s, s);
   const r = rng(9);
   for (let i = 0; i < 40000; i++) {
@@ -206,11 +208,11 @@ function skyTexture() {
   c.height = 512;
   const g = c.getContext('2d')!;
   const grad = g.createLinearGradient(0, 0, 0, 512);
-  grad.addColorStop(0, '#0b1524');
-  grad.addColorStop(0.45, '#1d3352');
-  grad.addColorStop(0.62, '#7a5a4a');
-  grad.addColorStop(0.7, '#c08560');
-  grad.addColorStop(1, '#1d2a3c');
+  grad.addColorStop(0, '#151618');
+  grad.addColorStop(0.45, '#2a2b2e');
+  grad.addColorStop(0.62, '#6f6258');
+  grad.addColorStop(0.7, '#c6a98e');
+  grad.addColorStop(1, '#2a2b2e');
   g.fillStyle = grad;
   g.fillRect(0, 0, 16, 512);
   const t = new THREE.CanvasTexture(c);
@@ -271,10 +273,10 @@ export function createYard({ containers, aspect, mobile = false, env }: { contai
     scene.environmentIntensity = 0.45;
   }
   scene.background = skyTexture();
-  scene.fog = new THREE.Fog('#2a3650', 45, mobile ? 150 : 175);
+  scene.fog = new THREE.Fog('#2c2d30', 45, mobile ? 150 : 175);
   const camera = new THREE.PerspectiveCamera(aspect < 1 ? 55 : 36, aspect, 0.5, 600);
 
-  const hemi = new THREE.HemisphereLight('#b9c8de', '#2e2622', 0.65);
+  const hemi = new THREE.HemisphereLight('#d6d3ce', '#2e2a26', 0.65);
   const sun = new THREE.DirectionalLight('#ffd9b5', 4.2);
   sun.position.set(-60, 45, 40);
   sun.castShadow = true;
@@ -288,7 +290,7 @@ export function createYard({ containers, aspect, mobile = false, env }: { contai
   sc.far = 220;
   sun.shadow.bias = -0.0006;
   sun.shadow.normalBias = 0.04;
-  const fill = new THREE.DirectionalLight('#8fa6c8', 0.7);
+  const fill = new THREE.DirectionalLight('#b8bcc2', 0.7);
   fill.position.set(50, 30, -40);
   scene.add(hemi, sun, sun.target, fill);
 
@@ -305,7 +307,7 @@ export function createYard({ containers, aspect, mobile = false, env }: { contai
     scene.add(m);
   }
   // distant container stacks (plain, unbranded) to suggest a port
-  const farMat = new THREE.MeshStandardMaterial({ color: '#3a4860', roughness: 0.8, metalness: 0.3 });
+  const farMat = new THREE.MeshStandardMaterial({ color: '#3d3e42', roughness: 0.8, metalness: 0.3 });
   const farGeo = new THREE.BoxGeometry(12.2, 2.6, 2.44);
   const rr = rng(77);
   for (let row = 0; row < 6; row++) {
@@ -322,10 +324,10 @@ export function createYard({ containers, aspect, mobile = false, env }: { contai
   // shared container assets
   const geos = { '20ft': containerGeometry('20ft'), '40ft': containerGeometry('40ft'), '40ft HC': containerGeometry('40ft HC') };
   const wear = paintTexture(3);
-  const paintMats = PAINTS.map((c) => new THREE.MeshStandardMaterial({ color: c, map: wear, roughness: 0.58, metalness: 0.35 }));
+  const paintMats = PAINTS.map((c) => new THREE.MeshStandardMaterial({ color: c, map: wear, roughness: 0.62, metalness: 0.3 }));
+  const brandMat = new THREE.MeshStandardMaterial({ color: BRAND_PAINT, map: wear, roughness: 0.5, metalness: 0.35 });
   const steelMat = new THREE.MeshStandardMaterial({ color: '#1a1f27', roughness: 0.6, metalness: 0.6 });
   const logoDark = new THREE.MeshStandardMaterial({ map: logoTexture(false), transparent: true, roughness: 0.6, metalness: 0.1, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 });
-  const logoLight = new THREE.MeshStandardMaterial({ map: logoTexture(true), transparent: true, roughness: 0.6, metalness: 0.1, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 });
 
   const glowTexture = (() => {
     const c = document.createElement('canvas');
@@ -342,17 +344,17 @@ export function createYard({ containers, aspect, mobile = false, env }: { contai
   const r = rng(12);
   const items = containers.map((c, i) => {
     const g = geos[c.size];
-    const paintIndex = i === 0 ? 0 : i === 1 ? 1 : Math.floor(r() * PAINTS.length);
-    const body = new THREE.Mesh(g.painted, paintMats[paintIndex]);
+    const branded = i === 0;
+    const paintIndex = i === 1 ? 0 : Math.floor(r() * PAINTS.length);
+    const body = new THREE.Mesh(g.painted, branded ? brandMat : paintMats[paintIndex]);
     const steel = new THREE.Mesh(g.steel, steelMat);
     body.castShadow = body.receiveShadow = true;
     steel.castShadow = true;
     const grp = new THREE.Group();
     grp.add(body, steel);
-    const light = PAINTS[paintIndex] === '#e9e2d6';
     const lw = Math.min(g.L * 0.62, 6.4);
-    for (const side of [1, -1]) {
-      const logo = new THREE.Mesh(new THREE.PlaneGeometry(lw, lw / 4), light ? logoLight : logoDark);
+    for (const side of branded ? [1, -1] : []) {
+      const logo = new THREE.Mesh(new THREE.PlaneGeometry(lw, lw / 4), logoDark);
       logo.position.set(0, g.H * 0.58, side * (W / 2 + 0.002));
       if (side < 0) logo.rotation.y = Math.PI;
       grp.add(logo);

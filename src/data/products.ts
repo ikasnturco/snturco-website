@@ -8,6 +8,7 @@
  * Texts describe general fibre characteristics. They are not test values: actual properties depend
  * on fibre quality, yarn count, spinning method and finishing.
  */
+import { applyTranslations } from './i18n';
 import type { L, LL } from '@/i18n/config';
 
 export type Category = 'natural' | 'synthetic' | 'regenerated';
@@ -36,7 +37,7 @@ export type Product = {
   compare: { moisture: Level; elasticity: Level; durability: Level; texture: L; source: L };
 };
 
-export const products: Product[] = [
+export const products: Product[] = applyTranslations<Product>([
   {
     slug: 'cotton',
     name: { en: 'Cotton', tr: 'Pamuk' },
@@ -506,7 +507,7 @@ export const products: Product[] = [
     related: ['linen', 'cotton'],
     compare: { moisture: 4, elasticity: 1, durability: 5, texture: { en: 'Coarse, firm, rustic', tr: 'Kalın, sıkı, rustik' }, source: { en: 'Plant (hemp stem)', tr: 'Bitki (kenevir sapı)' } },
   },
-];
+], 'products');
 
 export const productBySlug = Object.fromEntries(products.map((p) => [p.slug, p])) as Record<string, Product>;
 

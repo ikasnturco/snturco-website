@@ -42,7 +42,8 @@ Options: `--size 20ft | 40ft | 40ft HC` (default 40ft), `--status pending | in_t
 Commit both JSON files and push to `main`; the site updates after the deploy (about 2 minutes).
 The newest containers are highlighted in the 3D yard.
 
-## Demo mode
+## Before the first record
 
-While `shipments.json` has no records, the home page shows a sample yard labelled
-"Demo" and no numbers. The first real record switches it to live data.
+While `shipments.json` has no records, the home page shows the container scene without any numbers or
+labels (no "demo" text). The first real record switches it to live data and shows the counters.
+Only one container in the scene carries the SNTURCO logo; all others are plain.

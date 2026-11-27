@@ -65,7 +65,7 @@ export function StorySequence({ dict, nextId }: { dict: Dictionary; nextId: stri
       const dh = set.h * scale;
       const dx = (cw - dw) / 2;
       const dy = (ch - dh) / 2;
-      ctx.fillStyle = '#0b1524';
+      ctx.fillStyle = '#18191b';
       ctx.fillRect(0, 0, cw, ch);
       if (a) {
         ctx.globalAlpha = 1;
@@ -184,10 +184,10 @@ export function StorySequence({ dict, nextId }: { dict: Dictionary; nextId: stri
   const fadeOut = Math.min(1, Math.max(0, (progress - 0.975) / 0.025));
 
   return (
-    <section data-story ref={wrapRef} aria-label={s.eyebrow} className="relative h-[760vh] bg-ink text-white md:h-[900vh]">
+    <section data-story ref={wrapRef} aria-label={s.eyebrow} className="relative h-[420vh] bg-ink text-white md:h-[480vh]">
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         <canvas ref={canvasRef} aria-hidden="true" className="absolute inset-0 h-full w-full" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(11,21,36,0.65)_100%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(24,25,27,0.65)_100%)]" />
         <div className="pointer-events-none absolute inset-0 bg-ink" style={{ opacity: fadeOut }} />
 
         {!ready && (
@@ -213,7 +213,7 @@ export function StorySequence({ dict, nextId }: { dict: Dictionary; nextId: stri
                   aria-hidden={i !== beat}
                   className={`absolute inset-0 transition-all duration-700 ease-cine ${i === beat && ready ? 'translate-y-0 opacity-100' : i < beat ? '-translate-y-4 opacity-0' : 'translate-y-4 opacity-0'}`}
                 >
-                  <p className="display text-[clamp(2rem,4.4vw,3.6rem)] [text-shadow:0_2px_24px_rgba(11,21,36,0.8)]">{b.title}</p>
+                  <p className="display text-[clamp(2rem,4.4vw,3.6rem)] [text-shadow:0_2px_24px_rgba(24,25,27,0.8)]">{b.title}</p>
                   {b.text && <p className="mt-3 max-w-md text-[16px] leading-relaxed text-white/70 md:text-[18px]">{b.text}</p>}
                 </div>
               ))}

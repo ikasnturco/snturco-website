@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { IconArrow } from './Icons';
+import { WhatsAppButton } from './ContactLinks';
 import { asset } from '@/config/site';
 import { href, type Locale } from '@/i18n/config';
 import type { Dictionary } from '@/locales';
@@ -45,7 +46,6 @@ export function PageHero({ eyebrow, title, lead, children, crumbs, image, compac
           <div className="absolute inset-0 -z-10 bg-gradient-to-r from-ink via-ink/80 to-ink/20 rtl:bg-gradient-to-l" />
         </>
       )}
-      {!image && <div className="pointer-events-none absolute -top-48 end-[-10%] -z-10 h-[560px] w-[560px] rounded-full bg-copper/15 blur-[140px]" aria-hidden="true" />}
       <div className={`container relative ${compact ? 'pb-14 pt-36 md:pb-16 md:pt-40' : 'pb-20 pt-40 md:pb-28 md:pt-48'}`}>
         {crumbs && <Breadcrumbs crumbs={crumbs} />}
         <p className="eyebrow mt-8 animate-rise text-copper-300">{eyebrow}</p>
@@ -69,7 +69,7 @@ export function Section({ children, className = '', tone = 'light', id }: { chil
 export function SectionTitle({ eyebrow, title, text, tone = 'light', className = '' }: { eyebrow?: string; title: string; text?: string; tone?: 'light' | 'dark'; className?: string }) {
   return (
     <div className={`max-w-3xl ${className}`}>
-      {eyebrow && <p className={`eyebrow ${tone === 'dark' ? 'text-copper-300' : 'text-copper'}`}>{eyebrow}</p>}
+      {eyebrow && <p className={`eyebrow ${tone === 'dark' ? 'text-copper-300' : 'text-copper-700'}`}>{eyebrow}</p>}
       <h2 className={`display mt-4 text-[clamp(2rem,4.2vw,3.5rem)] ${tone === 'dark' ? 'text-white' : 'text-navy'}`}>{title}</h2>
       {text && <p className={`mt-5 max-w-2xl text-[17px] leading-relaxed ${tone === 'dark' ? 'text-white/65' : 'text-slate'}`}>{text}</p>}
     </div>
@@ -89,8 +89,7 @@ export function CtaBand({ locale, dict }: { locale: Locale; dict: Dictionary }) 
   return (
     <section className="bg-sand-50 print:hidden">
       <div className="container py-16 md:py-24">
-        <div className="relative isolate overflow-hidden rounded-[28px] bg-navy px-8 py-14 text-white md:px-16 md:py-20">
-          <div className="pointer-events-none absolute -bottom-40 -end-20 -z-10 h-[420px] w-[420px] rounded-full bg-copper/25 blur-[110px]" aria-hidden="true" />
+        <div className="relative isolate overflow-hidden rounded-[28px] bg-anthracite px-8 py-14 text-white md:px-16 md:py-20">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={asset('/images/story/cta-cord.webp')} alt="" aria-hidden="true" loading="lazy" className="absolute inset-y-0 end-0 -z-10 hidden h-full w-1/2 object-cover opacity-60 [mask-image:linear-gradient(to_right,transparent,black_40%)] md:block rtl:-scale-x-100" />
           <div className="max-w-xl">
@@ -100,9 +99,7 @@ export function CtaBand({ locale, dict }: { locale: Locale; dict: Dictionary }) 
               <Link href={href(locale, 'request-a-quote')} className="btn-copper">
                 {dict.cta.quote}
               </Link>
-              <Link href={href(locale, 'contact')} className="btn-ghost-light">
-                {dict.cta.contact}
-              </Link>
+              <WhatsAppButton dict={dict} />
             </div>
           </div>
         </div>
@@ -114,7 +111,7 @@ export function CtaBand({ locale, dict }: { locale: Locale; dict: Dictionary }) 
 export function FallbackNote({ show, text }: { show: boolean; text: string }) {
   if (!show) return null;
   return (
-    <p className="mb-8 inline-flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2 text-[13px] text-slate">
+    <p className="mb-8 inline-flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2 text-[13px] text-slate" data-fallback>
       <span aria-hidden="true">EN</span>
       {text}
     </p>

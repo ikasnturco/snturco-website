@@ -3,6 +3,8 @@ import { PageHero, CtaBand, FallbackNote, LevelDots, ArrowLink, type Crumb } fro
 import { ProductExplorer, type ExplorerItem } from '@/components/products/ProductExplorer';
 import { ProductCard } from '@/components/products/ProductCard';
 import { Gallery } from '@/components/products/Gallery';
+import { YarnViewer } from '@/components/products/YarnViewer';
+import { ContactList, WhatsAppButton } from '@/components/ContactLinks';
 import { href, tx, isFallback, type Locale } from '@/i18n/config';
 import type { Dictionary } from '@/locales';
 import { products, productBySlug, productImages, type Product } from '@/data/products';
@@ -94,6 +96,7 @@ export function ProductDetailView({ locale, dict, product: p }: { locale: Locale
   ];
   const related = p.related.map((s) => productBySlug[s]).filter(Boolean);
   const quoteHref = href(locale, 'request-a-quote', `yarn=${p.slug}`);
+  const waMessage = dict.contact.whatsappProduct.replace('{yarn}', `${name}${locale === 'en' ? '' : ` (${p.nameEn})`}`);
   const facts = [
     { k: l.classification, v: tx(p.classification, locale) },
     { k: l.source, v: tx(p.source, locale) },
@@ -104,16 +107,18 @@ export function ProductDetailView({ locale, dict, product: p }: { locale: Locale
   return (
     <>
       <PageHero eyebrow={dict.common.categories[p.category]} title={name} lead={tx(p.intro, locale)} crumbs={crumbs} image={img.main}>
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-3">
           <Link href={quoteHref} className="btn-copper">
             {dict.cta.quoteThis}
           </Link>
-          {locale !== 'en' && (
-            <span className="text-[14px] text-white/55">
-              {l.nameEn}: <span className="text-white/85">{p.nameEn}</span>
-            </span>
-          )}
+          <WhatsAppButton dict={dict} message={waMessage} />
+          <YarnViewer slug={p.slug} name={name} labels={dict.product.viewer} />
         </div>
+        {locale !== 'en' && (
+          <p className="mt-5 text-[14px] text-white/55">
+            {l.nameEn}: <span className="text-white/85">{p.nameEn}</span>
+          </p>
+        )}
       </PageHero>
 
       <section className="bg-sand-50 py-16 md:py-24">
@@ -122,7 +127,7 @@ export function ProductDetailView({ locale, dict, product: p }: { locale: Locale
           <div className="grid gap-14 lg:grid-cols-12">
             <aside className="lg:col-span-4">
               <div className="card-surface p-7 lg:sticky lg:top-28">
-                <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-copper">{l.atAGlance}</p>
+                <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-copper-700">{l.atAGlance}</p>
                 <dl className="mt-5 divide-y divide-line">
                   <div className="pb-4">
                     <dt className="text-[12.5px] text-slate">{l.nameEn}</dt>
@@ -138,6 +143,9 @@ export function ProductDetailView({ locale, dict, product: p }: { locale: Locale
                 <Link href={quoteHref} className="btn-primary mt-4 w-full">
                   {dict.cta.quote}
                 </Link>
+                <div className="mt-6 border-t border-line pt-6">
+                  <ContactList dict={dict} tone="light" showLocation={false} />
+                </div>
               </div>
             </aside>
 
@@ -200,13 +208,15 @@ export function ProductDetailView({ locale, dict, product: p }: { locale: Locale
 
               {p.slug === 'cotton' && <ArrowLink href={href(locale, 'cotton')}>{dict.product.cottonLink}</ArrowLink>}
 
-              <div className="relative isolate overflow-hidden rounded-2xl bg-navy p-8 text-white md:p-10">
-                <div className="pointer-events-none absolute -bottom-24 -end-10 -z-10 h-72 w-72 rounded-full bg-copper/30 blur-[90px]" aria-hidden="true" />
+              <div className="rounded-2xl bg-anthracite p-8 text-offwhite md:p-10">
                 <h2 className="display text-[30px]">{dict.product.quoteTitle}</h2>
-                <p className="mt-3 max-w-lg text-white/70">{dict.product.quoteText}</p>
-                <Link href={quoteHref} className="btn-copper mt-6">
-                  {dict.cta.quoteThis}
-                </Link>
+                <p className="mt-3 max-w-lg text-offwhite/70">{dict.product.quoteText}</p>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Link href={quoteHref} className="btn-copper">
+                    {dict.cta.quoteThis}
+                  </Link>
+                  <WhatsAppButton dict={dict} message={waMessage} />
+                </div>
               </div>
             </div>
           </div>

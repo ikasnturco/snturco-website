@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { PageHero, CtaBand, FallbackNote, type Crumb } from '@/components/ui';
+import { YarnViewer } from '@/components/products/YarnViewer';
+import { WhatsAppButton } from '@/components/ContactLinks';
 import { Gallery } from '@/components/products/Gallery';
 import { asset } from '@/config/site';
 import { href, tx, isFallback, type Locale } from '@/i18n/config';
@@ -41,9 +43,9 @@ export function CottonView({ locale, dict }: { locale: Locale; dict: Dictionary 
                   <span className="absolute start-6 top-6 text-[12px] tabular-nums tracking-[0.25em] text-white/70">{String(i + 1).padStart(2, '0')}</span>
                 </Link>
                 <div className="p-7 md:p-10 lg:col-span-7">
-                  <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-copper">{tx(c.staple, locale)}</p>
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-copper-700">{tx(c.staple, locale)}</p>
                   <h2 className="display mt-3 text-[clamp(1.8rem,3vw,2.6rem)] text-navy">
-                    <Link href={href(locale, `cotton/${c.slug}`)} className="hover:text-copper">
+                    <Link href={href(locale, `cotton/${c.slug}`)} className="hover:text-copper-700">
                       {tx(c.name, locale)}
                     </Link>
                   </h2>
@@ -79,14 +81,19 @@ export function CottonDetailView({ locale, dict, cotton: c }: { locale: Locale; 
     { label: name, href: href(locale, `cotton/${c.slug}`) },
   ];
   const quoteHref = href(locale, 'request-a-quote', `yarn=${c.slug}`);
+  const waMessage = dict.contact.whatsappProduct.replace('{yarn}', `${name}${locale === 'en' ? '' : ` (${c.nameEn})`}`);
   const idx = cottons.findIndex((x) => x.slug === c.slug);
   const next = cottons[(idx + 1) % cottons.length];
   return (
     <>
       <PageHero eyebrow={`${dict.nav.cotton} · ${tx(c.staple, locale)}`} title={name} lead={tx(c.character, locale)} crumbs={crumbs} image={img.main}>
-        <Link href={quoteHref} className="btn-copper">
-          {dict.cta.quoteThis}
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link href={quoteHref} className="btn-copper">
+            {dict.cta.quoteThis}
+          </Link>
+          <WhatsAppButton dict={dict} message={waMessage} />
+          <YarnViewer slug={c.slug} kind="cotton" name={name} labels={dict.product.viewer} />
+        </div>
       </PageHero>
       <section className="bg-sand-50 py-16 md:py-24">
         <div className="container grid gap-14 lg:grid-cols-12">
@@ -97,7 +104,7 @@ export function CottonDetailView({ locale, dict, cotton: c }: { locale: Locale; 
               <Row label={l.fibre}>{tx(c.fibre, locale)}</Row>
               <Row label={l.character}>{tx(c.character, locale)}</Row>
               <Row label={l.quality}>
-                <ul className="list-disc space-y-1 ps-5 marker:text-copper">
+                <ul className="list-disc space-y-1 ps-5 marker:text-copper-700">
                   {tx(c.quality, locale).map((q) => (
                     <li key={q}>{q}</li>
                   ))}
@@ -116,19 +123,22 @@ export function CottonDetailView({ locale, dict, cotton: c }: { locale: Locale; 
           <div className="lg:col-span-5">
             <h2 className="display text-[26px] text-navy">{dict.product.labels.gallery}</h2>
             <Gallery images={img.gallery} small={img.gallerySmall} alt={`${name} – ${dict.common.renderNote}`} note={dict.common.renderNote} />
-            <div className="mt-10 rounded-2xl bg-navy p-8 text-white">
+            <div className="mt-10 rounded-2xl bg-anthracite p-8 text-offwhite">
               <h2 className="display text-[28px]">{dict.product.quoteTitle}</h2>
-              <p className="mt-3 text-white/70">{dict.product.quoteText}</p>
-              <Link href={quoteHref} className="btn-copper mt-6">
-                {dict.cta.quoteThis}
-              </Link>
+              <p className="mt-3 text-offwhite/70">{dict.product.quoteText}</p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link href={quoteHref} className="btn-copper">
+                  {dict.cta.quoteThis}
+                </Link>
+                <WhatsAppButton dict={dict} message={waMessage} />
+              </div>
             </div>
             <Link href={href(locale, `cotton/${next.slug}`)} className="group mt-6 flex items-center justify-between rounded-2xl bg-white p-6 ring-1 ring-line transition hover:ring-copper">
               <span>
-                <span className="block text-[12px] uppercase tracking-[0.16em] text-slate">→</span>
+                <span className="block text-[12px] uppercase tracking-[0.16em] text-slate">{dict.cottonPage.next}</span>
                 <span className="display text-[22px] text-navy">{tx(next.name, locale)}</span>
               </span>
-              <span aria-hidden="true" className="text-copper transition group-hover:translate-x-1 rtl:-scale-x-100">→</span>
+              <span aria-hidden="true" className="text-copper-700 transition group-hover:translate-x-1 rtl:-scale-x-100">→</span>
             </Link>
           </div>
         </div>
