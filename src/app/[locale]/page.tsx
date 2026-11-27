@@ -13,7 +13,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   if (!isLocale(locale)) return {};
-  return buildMetadata(locale, '', getDictionary(locale).home.meta, { image: '/images/hero/poster.webp' });
+  return buildMetadata(locale, '', getDictionary(locale).home.meta);
 }
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {

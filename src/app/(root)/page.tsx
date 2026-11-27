@@ -1,12 +1,15 @@
 import { site } from '@/config/site';
+import { buildMetadata } from '@/lib/seo';
+import { defaultLocale } from '@/i18n/config';
+import { getDictionary } from '@/locales';
 
 /**
  * The site root sends visitors to their language (based on the browser language)
  * or to English by default. Search engines see a canonical link to /en/.
  */
+// Link previews (WhatsApp, LinkedIn) read this page without running the redirect script, so it carries the English card.
 export const metadata = {
-  title: 'SNTURCO',
-  alternates: { canonical: `${site.url}/en/` },
+  ...buildMetadata(defaultLocale, '', getDictionary(defaultLocale).home.meta),
   robots: { index: false, follow: true },
 };
 
