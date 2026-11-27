@@ -27,7 +27,7 @@ export const site = {
    * (ikasourcing@snturco.com). A repository variable FORM_ACCESS_KEY overrides it.
    */
   formEndpoint: process.env.NEXT_PUBLIC_FORM_ENDPOINT || 'https://api.web3forms.com/submit',
-  formAccessKey: process.env.NEXT_PUBLIC_FORM_ACCESS_KEY || '',
+  formAccessKey: process.env.NEXT_PUBLIC_FORM_ACCESS_KEY || 'da75930d-5c6a-48b5-97ad-9687ad0fb53f',
 } as const;
 
 export function asset(path: string) {
