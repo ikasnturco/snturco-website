@@ -128,3 +128,18 @@ The Pages custom domain is `snturco.com`. Canonical URLs use `https://snturco.co
 
 Remove any other A/AAAA records on `@` (old Squarespace site). **Do not change MX, SPF (TXT), DKIM (TXT) or nameserver records** — they carry the company email.
 When GitHub shows the certificate is ready, tick "Enforce HTTPS" in Settings → Pages.
+
+## Deployment (Cloudflare Pages)
+
+Cloudflare Pages builds the same static export straight from this repository. No environment variables are needed:
+the defaults in `src/config/site.ts` already point to `https://snturco.com` and the Web3Forms key.
+
+1. Cloudflare dashboard → Workers & Pages → Create → **Pages** → Import an existing Git repository →
+   `ikasnturco/snturco-website`.
+2. Production branch `main`. Framework preset **Next.js (Static HTML Export)**. Build command `npm run build`.
+   Build output directory `out`. Node version comes from `.node-version` (22).
+3. Check the preview at `https://<project>.pages.dev` before any DNS change. Every pull request also gets
+   its own preview URL.
+4. Custom domains: add `snturco.com` and `www.snturco.com` to the Pages project. The apex domain needs the
+   DNS zone on Cloudflare (free plan). Copy **every** existing record first, MX, SPF and DKIM exactly as they
+   are, then switch the nameservers at the registrar. Keep GitHub Pages running until Cloudflare serves the site.
