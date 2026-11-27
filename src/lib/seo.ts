@@ -28,7 +28,8 @@ export function buildMetadata(locale: Locale, slug: string, meta: { title: strin
       description: meta.description,
       locale: localeMeta[locale].ogLocale,
       alternateLocale: locales.filter((l) => l !== locale).map((l) => localeMeta[l].ogLocale),
-      images: [{ url: image, alt: site.legalName }],
+      // WhatsApp needs JPG/PNG; the default card is a 1200×630 PNG
+      images: [opts.image ? { url: image, alt: site.legalName } : { url: image, width: 1200, height: 630, type: 'image/png', alt: site.legalName }],
     },
     twitter: { card: 'summary_large_image', title, description: meta.description, images: [image] },
     robots: { index: true, follow: true },
